@@ -1,0 +1,398 @@
+{
+  "@@locale": "en",
+
+  "appName": "PromOff",
+  "@appName": { "description": "Application name" },
+
+  "homeTitle": "Today's best deals",
+  "@homeTitle": { "description": "Title shown on the home screen" },
+
+  "searchPlaceholder": "Search products...",
+  "searchDealsPlaceholder": "Search deals, products...",
+  "searchExampleHint": "Search \"wireless earbuds\"",
+  "categories": "Categories",
+  "discount": "Discount",
+  "store": "Store",
+  "discountType": "Discount Type",
+  "categoryNew": "New",
+  "categoryTopCoupons": "Top coupons",
+
+  "sortBy": "Sort by",
+  "sortHighestDiscount": "Highest discount",
+  "sortHighestPrice": "Highest price",
+  "sortExpiringSoon": "Expiring soon",
+  "sortRelevance": "Relevance",
+  "sortPriceLow": "Price: Low → High",
+  "sortPriceHigh": "Price: High → Low",
+  "sortDiscountHighest": "Discount: Highest",
+
+  "mostPopular": "Most Popular",
+  "bestSellers": "Best Sellers",
+  "dealsOfTheBrand": "Deals of the Brand",
+  "amazonPromoCodes": "Amazon Promo Codes",
+  "viewAll": "View all",
+  "shopNow": "Shop now",
+  "seeAll": "See all",
+
+  "navHome": "Home",
+  "navDeals": "Deals",
+  "navCoupons": "Coupons",
+  "navSaved": "Saved",
+  "navProfile": "Profile",
+  "navPromoCodes": "Promo Codes",
+  "navComingSoon": "Coming Soon",
+  "navComingEnd": "Ending Soon",
+  "navActiveDeals": "Active Deals",
+  "navUpcoming": "Upcoming",
+  "navLimited": "Limited",
+
+  "topPick": "Top Pick",
+  "popular": "Popular",
+  "promoCode": "PROMO CODE",
+  "getCode": "Get Code",
+  "off": "OFF",
+
+  "loginTitle": "Welcome to PromOff",
+  "loginSubtitle": "Save more on your favorite Amazon products",
+  "welcomeBack": "Welcome back",
+  "signInSubtitle": "Sign in to access exclusive deals & codes",
+  "email": "Email",
+  "password": "Password",
+  "signIn": "Sign in",
+  "signUp": "Sign up",
+  "continueWithGoogle": "Continue with Google",
+  "signUpWithGoogle": "Sign up with Google",
+  "forgotPassword": "Forgot password?",
+  "dontHaveAccount": "Don't have an account?",
+  "alreadyHaveAccount": "Already have an account?",
+  "or": "or",
+  "fullName": "Full name",
+  "confirmPassword": "Confirm password",
+  "createAccount": "Create account",
+  "joinThousands": "Join thousands saving on Amazon every day",
+  "agreeToThe": "I agree to the ",
+  "termsOfService": "Terms of Service",
+  "and": "and",
+  "privacyPolicy": "Privacy Policy",
+  "agreeToTermsContinue": "Please agree to the terms to continue",
+  "signingInTerms": "By signing in, you agree to our Terms of Service and Privacy Policy.",
+
+  "welcomeUser": "Welcome, {name}!",
+  "@welcomeUser": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+
+  "signInFailed": "Sign in cancelled or failed. Try again.",
+  "signUpFailed": "Sign up cancelled or failed. Try again.",
+
+  "profileTitle": "Profile",
+  "profileSettings": "Profile Settings",
+  "profileEditPhoto": "Edit photo",
+  "profileName": "Name",
+  "profilePhone": "Phone",
+  "profileSave": "Save changes",
+  "profileMyAlerts": "My alerts",
+  "profileLogout": "Log out",
+  "signOut": "Sign out",
+  "savedDeals": "Saved Deals",
+  "browsingHistory": "Browsing History",
+
+  "gender": "Gender",
+  "birthday": "Birthday",
+  "shippingAddress": "Shipping address",
+  "notSet": "Not set",
+  "account": "Account",
+  "shoppingPreferences": "Shopping preferences",
+  "categoryPreferences": "Category preferences",
+  "storePreferences": "Store preferences",
+  "dealPriorities": "Deal priorities",
+  "emailPreference": "Email Preference",
+  "emailPreferenceTitle": "Updates of daily deals and saved deals",
+  "emailPreferenceDesc": "Stay updated on daily top deals and your soon-to-expire saved deals.",
+  "changePassword": "Change Password",
+  "currentPassword": "Current password",
+  "newPassword": "New password",
+  "confirmNewPassword": "Confirm new password",
+  "update": "Update",
+  "passwordsDoNotMatch": "Passwords do not match",
+  "passwordUpdated": "Password updated",
+  "addAddress": "Add Address",
+  "address1": "Address 1",
+  "address2Optional": "Address 2 (Optional)",
+  "city": "City",
+  "state": "State",
+  "zipCode": "Zip Code",
+  "addressSaved": "Address saved",
+  "couldNotSaveAddress": "Could not save address",
+  "deleteAccount": "Delete Account",
+  "deleteAccountDescription": "Delete your account and all account data.",
+  "deleteAccountWarning": "Please be aware that this action is irreversible.",
+  "deleteAccountButton": "Delete account",
+  "deleteAccountConfirmation": "This will permanently delete your account and all your data. This action cannot be undone.",
+  "couldNotDeleteAccount": "Could not delete account",
+  "couldNotSaveChanges": "Could not save changes",
+  "couldNotLoadProfile": "Could not load profile",
+  "preferencesUpdated": "Preferences updated",
+
+  "alertConfigTitle": "Set alert",
+  "alertNotifyPriceDrop": "Notify me when price drops to:",
+  "alertNotifyDiscountReaches": "Notify me when discount reaches:",
+  "alertNotifyPromoLive": "Notify me when this upcoming promo goes live",
+  "alertNotifyPromoExpiring": "Notify me when this promo is about to expire",
+  "alertSave": "Save alert",
+  "alertDelete": "Delete alert",
+
+  "alertSavedAt": "Alert set for {date}",
+  "@alertSavedAt": {
+    "placeholders": {
+      "date": { "type": "DateTime", "format": "yMMMd" }
+    }
+  },
+
+  "settingsTitle": "Settings",
+  "settingsLanguage": "Language",
+  "settingsNotifications": "Notifications",
+  "settingsTheme": "Theme",
+  "settingsTermsConditions": "Terms and Conditions",
+  "settingsPrivacyPolicy": "Privacy Policy",
+  "settingsAbout": "About",
+
+  "settingsVersion": "Version {version}",
+  "@settingsVersion": {
+    "placeholders": { "version": { "type": "String" } }
+  },
+
+  "notificationsTitle": "Notifications",
+  "notificationsEmpty": "You have no notifications yet",
+
+  "hello": "Hello, {name}!",
+  "@hello": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+
+  "itemsCount": "{count, plural, =0{No items} =1{1 item} other{{count} items}}",
+  "@itemsCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "dealsCount": "{count} deals",
+  "@dealsCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "searching": "Searching...",
+  "searchError": "Search error",
+
+  "searchResult": "1 result for \"{query}\"",
+  "@searchResult": {
+    "placeholders": { "query": { "type": "String" } }
+  },
+
+  "searchResults": "{count} results for \"{query}\"",
+  "@searchResults": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "query": { "type": "String" }
+    }
+  },
+
+  "searchForProducts": "Search for products",
+  "typeKeywordToFind": "Type a keyword to find Amazon deals",
+
+  "noResultsFor": "No results for \"{query}\"",
+  "@noResultsFor": {
+    "placeholders": { "query": { "type": "String" } }
+  },
+
+  "tryDifferentKeyword": "Try a different keyword",
+  "searchFailed": "Search failed",
+
+  "featured": "Featured",
+  "saved": "Saved",
+  "topDeals": "Top deals",
+  "heroBannerSubtitle": "Amazon daily deals curated for you",
+  "noSavedDeals": "No saved deals yet",
+  "noSavedDealsHint": "Tap the bookmark on any deal to save it",
+  "visitButton": "Visit",
+  "pricePerUnit": "/ each",
+
+  "couldNotLoadDeals": "Could not load deals",
+  "checkConnectionRetry": "Check your connection and try again",
+  "noDealsFound": "No deals found",
+  "tryDifferentFilter": "Try a different category or discount filter",
+
+  "comingSoon": "Coming soon!",
+  "comingSoonBannerTitle": "⏰ Coming Soon",
+  "comingSoonBannerSubtitle": "Be first to grab upcoming deals before they launch",
+  "failedToLoadUpcoming": "Failed to load upcoming deals",
+  "noUpcomingDeals": "No upcoming deals right now",
+  "checkBackSoon": "Check back soon!",
+
+  "liveNow": "Live now",
+  "expired": "Expired",
+
+  "launchesInDaysHours": "Launches in {days}d {hours}h",
+  "@launchesInDaysHours": {
+    "placeholders": {
+      "days": { "type": "int" },
+      "hours": { "type": "int" }
+    }
+  },
+
+  "launchesInHours": "Launches in {hours}h",
+  "@launchesInHours": {
+    "placeholders": { "hours": { "type": "int" } }
+  },
+
+  "launchingSoon": "Launching soon",
+
+  "expiresInDays": "Expires in {days}d",
+  "@expiresInDays": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+
+  "expiresInHours": "Expires in {hours}h",
+  "@expiresInHours": {
+    "placeholders": { "hours": { "type": "int" } }
+  },
+
+  "expiringSoon": "Expiring soon",
+
+  "codeCopied": "Code \"{code}\" copied!",
+  "@codeCopied": {
+    "placeholders": { "code": { "type": "String" } }
+  },
+
+  "youSave": "You save {amount} ({percent}%)",
+  "@youSave": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "percent": { "type": "int" }
+    }
+  },
+
+  "codeLabel": "Code:",
+  "getDiscountOnAmazon": "Get discount on Amazon",
+  "revealCode": "Reveal code",
+  "howToUse": "How to use",
+  "getYourDiscount": "Get your discount",
+  "viewProducts": "View {count} products",
+  "@viewProducts": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "drawerCategories": "Categories",
+  "drawerDiscount": "Discount",
+  "navFavorites": "Favorites",
+  "favoritesTitle": "My Favorites",
+  "noFavorites": "No favorites yet",
+  "noFavoritesHint": "Tap the heart on any deal to save it here",
+
+  "groupProductsTitle": "Products",
+
+  "endingSoonBannerTitle": "🔥 Ending Soon",
+  "endingSoonBannerSubtitle": "Grab these deals before they expire",
+
+  "errorGeneric": "Something went wrong. Please try again.",
+  "errorNoInternet": "No internet connection",
+  "retry": "Retry",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "delete": "Delete",
+  "edit": "Edit",
+  "save": "Save",
+  "close": "Close",
+  "savedMessage": "Saved",
+  "premiumAccess": "Premium Access",
+
+  "profileLastName": "Last name",
+  "profileLogoutButton": "Log out",
+  "profileLogoutConfirm": "Are you sure you want to log out?",
+
+  "alertsTitle": "My Alerts",
+  "alertNew": "New Alert",
+  "alertEdit": "Edit Alert",
+  "alertSaveButton": "Save",
+  "alertType": "Alert type",
+  "alertTypeProduct": "Product",
+  "alertTypeBrand": "Brand",
+  "alertProductAsin": "Product ASIN *",
+  "alertProductAsinHint": "e.g. B08N5WRWNW",
+  "alertProductNameOptional": "Product name (optional)",
+  "alertBrandNameLabel": "Brand name *",
+  "alertBrandNameHint": "e.g. Sony, Apple, Nike",
+  "alertTriggerConditions": "Trigger conditions",
+  "alertMinDiscount": "Min discount % (optional)",
+  "alertMaxPrice": "Max price (optional)",
+  "alertNotifyBeforeExpiry": "Notify before expiry",
+  "alertNotifyBeforeExpiryDesc": "Get notified when a deal expires in < 24h",
+  "alertChannels": "Channels",
+  "alertEmailChannel": "Email notifications",
+  "alertEmailChannelDesc": "Max 1 email per alert per day",
+  "alertStatusSection": "Status",
+  "alertActiveLabel": "Alert active",
+  "alertPause": "Pause",
+  "alertResume": "Resume",
+  "alertNoAlerts": "No alerts yet",
+  "alertNoAlertsDesc": "Create an alert to get notified when products drop in price or a brand posts a new deal.",
+  "alertCreateButton": "Create alert",
+  "alertNewButton": "New alert",
+  "alertCouldNotSave": "Could not save alert",
+  "alertSectionTitle": "Price Alerts",
+  "alertManage": "Manage",
+  "alertGetNotified": "Get notified when prices drop",
+  "alertAsinRequired": "ASIN is required",
+  "alertBrandRequired": "Brand name is required",
+  "alertDiscountRange": "Enter a value between 0 and 100",
+  "alertPriceInvalid": "Enter a valid price",
+  "alertDeleteTitle": "Delete alert",
+  "alertActive": "Active",
+  "alertPaused": "Paused",
+  "alertDeleteConfirm": "Delete \"{name}\"?",
+  "@alertDeleteConfirm": { "placeholders": { "name": { "type": "String" } } },
+
+  "limitedDealsTitle": "Limited Deals",
+  "limitedDealsSubtitle": "Exclusive deals for a limited time only",
+  "limitedChooseCategory": "Choose a category",
+  "limitedUpcomingDesc": "Deals that start soon",
+  "limitedEndingSoonDesc": "Deals that end soon",
+  "limitedFeatureTimeTitle": "Limited Time",
+  "limitedFeatureTimeDesc": "Deals available for a short time only",
+  "limitedFeatureSavingsTitle": "Great Savings",
+  "limitedFeatureSavingsDesc": "Big discounts on top products",
+  "limitedFeatureMissTitle": "Don't Miss Out",
+  "limitedFeatureMissDesc": "Once they're gone, they're gone!",
+  "limitedAlertTitle": "Turn on deal alerts",
+  "limitedAlertDesc": "Get notified so you never miss a limited deal.",
+  "limitedAlertButton": "Enable Alerts",
+
+  "drawerHiddenDeals": "Hidden deals",
+  "drawerTrendingNow": "Trending now",
+  "drawerLimitedDeals": "Limited deals",
+  "drawerPromoCodes": "Promo codes",
+  "drawerPremiumDeals": "Premium deals",
+  "drawerDealAlerts": "Deal alerts",
+  "drawerDailyPicks": "Daily picks",
+  "drawerSupport": "Support",
+  "drawerRateApp": "Rate our app",
+  "drawerInviteFriends": "Invite friends",
+  "drawerSettings": "Settings",
+
+  "howToUseCode": "How to use code",
+  "howToUseStep1": "Click \"Get discount on Amazon\".",
+  "howToUseStep2": "Copy the code.",
+  "howToUseStep3": "Go to Amazon and add the item to your cart.",
+  "howToUseStep4": "Paste the code at checkout.",
+  "howToUseStep5": "Enjoy your discount!",
+  "codesLimitedUsesTitle": "Codes may have limited uses",
+  "codesLimitedUsesDesc": "Make sure to use your code before it expires.",
+
+  "loginRequiredTitle": "Login Required",
+  "loginRequiredFavoriteBody": "Sign in or register to save favorites and access them from any device.",
+  "goToRegister": "Register",
+  "loginToViewFavorites": "Sign in to see your saved deals.",
+  "myCategories": "My Categories",
+  "categoryPreferencesTitle": "Category Preferences",
+  "categoryPreferencesSubtitle": "Select the categories you want to see. 'All' will show products from your selected categories.",
+  "categoryPreferencesSaved": "Category preferences saved"
+}
