@@ -912,7 +912,7 @@ class _BestSellerCardState extends State<_BestSellerCard> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Space reserved for the badge (positioned above)
-              const SizedBox(width: 40),
+              const SizedBox(width: 52),
 
               // ── Product image (fills full card height, no padding) ────────────
               SizedBox(
@@ -1126,17 +1126,17 @@ class _BestSellerCardState extends State<_BestSellerCard> {
             child: ClipPath(
               clipper: const _RankBadgeClipper(),
               child: Container(
-                width: 40,
-                height: 80,
+                width: 52,
+                height: 62,
                 color: const Color(0xFF1B3A6B),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 10),
                     Text(
                       '#',
                       style: GoogleFonts.inter(
-                        fontSize: 8,
+                        fontSize: 9,
                         fontWeight: FontWeight.w700,
                         color: Colors.white70,
                       ),
@@ -1144,10 +1144,10 @@ class _BestSellerCardState extends State<_BestSellerCard> {
                     Text(
                       '${widget.rank}',
                       style: GoogleFonts.inter(
-                        fontSize: 18,
+                        fontSize: 20,
                         fontWeight: FontWeight.w900,
                         color: Colors.white,
-                        height: 1.1,
+                        height: 1.0,
                       ),
                     ),
                   ],
@@ -1182,8 +1182,8 @@ class _RankBadgeClipper extends CustomClipper<Path> {
 
   @override
   Path getClip(Size size) {
-    const double topRadius = 14.0;
-    const double notchDepth = 16.0;
+    const double topRadius = 8.0;
+    const double notchDepth = 14.0;
     return Path()
       ..moveTo(0, topRadius)
       ..arcToPoint(
@@ -1191,7 +1191,12 @@ class _RankBadgeClipper extends CustomClipper<Path> {
         radius: const Radius.circular(topRadius),
         clockwise: false,
       )
-      ..lineTo(size.width, 0)
+      ..lineTo(size.width - topRadius, 0)
+      ..arcToPoint(
+        Offset(size.width, topRadius),
+        radius: const Radius.circular(topRadius),
+        clockwise: true,
+      )
       ..lineTo(size.width, size.height - notchDepth)
       ..lineTo(size.width / 2, size.height)
       ..lineTo(0, size.height - notchDepth)
