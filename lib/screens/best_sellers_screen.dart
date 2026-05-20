@@ -1131,28 +1131,25 @@ class _BestSellerCardState extends State<_BestSellerCard> {
                 width: 38,
                 height: 56,
                 color: const Color(0xFF1B3A6B),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 10),
-                    Text(
-                      '#',
-                      style: GoogleFonts.inter(
-                        fontSize: 9,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white70,
-                      ),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 14),
+                  child: Center(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          '#${widget.rank}',
+                          style: GoogleFonts.inter(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.white,
+                            height: 1.0,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      '${widget.rank}',
-                      style: GoogleFonts.inter(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                        height: 1.0,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
