@@ -90,7 +90,7 @@ class _BestSellersScreenState extends State<BestSellersScreen> {
       final res = await ApiService.getBestSellers(
         category: slug,
         categories: slugsToSend,
-        minDiscount: 25,
+        minDiscount: 20,
         limit: 10,
         page: 1,
       );
@@ -125,7 +125,7 @@ class _BestSellersScreenState extends State<BestSellersScreen> {
       final res = await ApiService.getBestSellers(
         category: _selectedSlug,
         categories: slugsToSend,
-        minDiscount: 25,
+        minDiscount: 20,
         limit: 10,
         page: nextPage,
       );
