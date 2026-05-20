@@ -968,8 +968,8 @@ class _BestSellerCardState extends State<_BestSellerCard> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: SizedBox(
-                    width: 100,
-                    height: 100,
+                    width: 120,
+                    height: 120,
                     child: p.image != null
                         ? CachedNetworkImage(
                             imageUrl: p.image!,
@@ -1000,7 +1000,7 @@ class _BestSellerCardState extends State<_BestSellerCard> {
               // ── Content ──────────────────────────────────────────────────────
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 10, 36, 10),
+                  padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -1117,48 +1117,54 @@ class _BestSellerCardState extends State<_BestSellerCard> {
                         ),
                       const SizedBox(height: 3),
 
-                      // Sold this week
+                      // Sold this week + Get Deal button
                       Row(
                         children: [
-                          const Icon(Icons.local_fire_department_rounded,
-                              size: 13, color: Color(0xFFF97316)),
-                          const SizedBox(width: 4),
-                          Text(
-                            '$_soldCount ${l10n.soldThisWeek}',
-                            style: GoogleFonts.inter(
-                              fontSize: 11,
-                              color: AppColors.textSecondary,
+                          Expanded(
+                            child: Row(
+                              children: [
+                                const Icon(Icons.local_fire_department_rounded,
+                                    size: 13, color: Color(0xFFF97316)),
+                                const SizedBox(width: 4),
+                                Flexible(
+                                  child: Text(
+                                    '$_soldCount ${l10n.soldThisWeek}',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.inter(
+                                      fontSize: 11,
+                                      color: AppColors.textSecondary,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          SizedBox(
+                            height: 36,
+                            child: ElevatedButton.icon(
+                              onPressed: _openUrl,
+                              icon: const Icon(Icons.open_in_new_rounded, size: 13),
+                              label: Text(
+                                l10n.getDeal,
+                                style: GoogleFonts.inter(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFFF97316),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(horizontal: 14),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                elevation: 0,
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
                             ),
                           ),
                         ],
-                      ),
-                      const SizedBox(height: 8),
-
-                      // Get Deal button
-                      SizedBox(
-                        height: 32,
-                        child: ElevatedButton.icon(
-                          onPressed: _openUrl,
-                          icon: const Icon(Icons.open_in_new_rounded, size: 13),
-                          label: Text(
-                            l10n.getDeal,
-                            style: GoogleFonts.inter(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFF97316),
-                            foregroundColor: Colors.white,
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            elevation: 0,
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                        ),
                       ),
                     ],
                   ),
