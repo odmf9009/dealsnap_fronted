@@ -926,20 +926,16 @@ class _BestSellerCardState extends State<_BestSellerCard> {
             child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // ── Rank badge ──────────────────────────────────────────────────
-              Container(
-                width: 36,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF1B3A6B),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(14),
-                    bottomLeft: Radius.circular(14),
-                  ),
-                ),
-                child: Center(
+              // ── Rank badge (ribbon/bookmark shape) ─────────────────────────
+              ClipPath(
+                clipper: const _RankBadgeClipper(),
+                child: Container(
+                  width: 40,
+                  color: const Color(0xFF1B3A6B),
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      const SizedBox(height: 14),
                       Text(
                         '#',
                         style: GoogleFonts.inter(
@@ -951,7 +947,7 @@ class _BestSellerCardState extends State<_BestSellerCard> {
                       Text(
                         '${widget.rank}',
                         style: GoogleFonts.inter(
-                          fontSize: 16,
+                          fontSize: 18,
                           fontWeight: FontWeight.w900,
                           color: Colors.white,
                           height: 1.1,
@@ -962,39 +958,32 @@ class _BestSellerCardState extends State<_BestSellerCard> {
                 ),
               ),
 
-              // ── Product image ────────────────────────────────────────────────
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: SizedBox(
-                    width: 120,
-                    height: 120,
-                    child: p.image != null
-                        ? CachedNetworkImage(
-                            imageUrl: p.image!,
-                            fit: BoxFit.contain,
-                            placeholder: (_, __) =>
-                                Container(color: AppColors.surfaceVariant),
-                            errorWidget: (_, __, ___) => Container(
-                              color: AppColors.surfaceVariant,
-                              child: const Icon(
-                                Icons.image_not_supported_outlined,
-                                color: AppColors.textMuted,
-                                size: 28,
-                              ),
-                            ),
-                          )
-                        : Container(
-                            color: AppColors.surfaceVariant,
-                            child: const Icon(
-                              Icons.image_not_supported_outlined,
-                              color: AppColors.textMuted,
-                              size: 28,
-                            ),
+              // ── Product image (fills full card height, no padding) ────────────
+              SizedBox(
+                width: 120,
+                child: p.image != null
+                    ? CachedNetworkImage(
+                        imageUrl: p.image!,
+                        fit: BoxFit.cover,
+                        placeholder: (_, __) =>
+                            Container(color: AppColors.surfaceVariant),
+                        errorWidget: (_, __, ___) => Container(
+                          color: AppColors.surfaceVariant,
+                          child: const Icon(
+                            Icons.image_not_supported_outlined,
+                            color: AppColors.textMuted,
+                            size: 32,
                           ),
-                  ),
-                ),
+                        ),
+                      )
+                    : Container(
+                        color: AppColors.surfaceVariant,
+                        child: const Icon(
+                          Icons.image_not_supported_outlined,
+                          color: AppColors.textMuted,
+                          size: 32,
+                        ),
+                      ),
               ),
 
               // ── Content ──────────────────────────────────────────────────────
@@ -1177,6 +1166,33 @@ class _BestSellerCardState extends State<_BestSellerCard> {
       ),
     );
   }
+}
+
+// ── Rank badge ribbon clipper ─────────────────────────────────────────────────
+
+class _RankBadgeClipper extends CustomClipper<Path> {
+  const _RankBadgeClipper();
+
+  @override
+  Path getClip(Size size) {
+    const double topRadius = 14.0;
+    const double notchDepth = 16.0;
+    return Path()
+      ..moveTo(0, topRadius)
+      ..arcToPoint(
+        const Offset(topRadius, 0),
+        radius: const Radius.circular(topRadius),
+        clockwise: false,
+      )
+      ..lineTo(size.width, 0)
+      ..lineTo(size.width, size.height - notchDepth)
+      ..lineTo(size.width / 2, size.height)
+      ..lineTo(0, size.height - notchDepth)
+      ..close();
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> _) => false;
 }
 
 // ── Star rating row ───────────────────────────────────────────────────────────
