@@ -238,12 +238,15 @@ class _BestSellersScreenState extends State<BestSellersScreen> {
                       ),
                     ),
                     const SizedBox(width: 10),
-                    Text(
-                      l10n.bestSellers,
-                      style: GoogleFonts.inter(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.textPrimary,
+                    Flexible(
+                      child: Text(
+                        l10n.bestSellers,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.inter(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.textPrimary,
+                        ),
                       ),
                     ),
                   ],
