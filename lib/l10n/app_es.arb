@@ -313,5 +313,17 @@
   "myCategories": "Mis categorías",
   "categoryPreferencesTitle": "Preferencias de categoría",
   "categoryPreferencesSubtitle": "Selecciona las categorías que quieres ver. 'Todas' mostrará productos de tus categorías seleccionadas.",
-  "categoryPreferencesSaved": "Preferencias de categoría guardadas"
+  "categoryPreferencesSaved": "Preferencias de categoría guardadas",
+
+  "bestSellersSubtitle": "Explora los productos más vendidos, amados por miles de compradores.",
+  "bestSellersUpdatedDaily": "Actualizado diario",
+  "topBestSellers": "Los más vendidos",
+  "getDeal": "Ver oferta",
+  "allCategories": "Todas las categorías",
+  "soldThisWeek": "vendidos esta semana",
+  "youSaveTodayAmount": "Ahorras {amount} hoy",
+  "whyBestSellers": "¿Por qué son los más vendidos?",
+  "whyBestSellersDesc": "Estos productos son tendencia por una razón. Mejor valorados, más queridos y más vendidos.",
+  "moreCategories": "Más",
+  "rankInCategory": "#{rank} en {category}"
 }

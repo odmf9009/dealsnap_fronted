@@ -69,8 +69,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: Center(
-        child: SingleChildScrollView(
+      body: SafeArea(
+        top: false,
+        child: Center(
+          child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(
             horizontal: isWide ? size.width * 0.3 : 24,
             vertical: 16,
@@ -250,6 +252,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 32),
             ],
           ),
+        ),
         ),
       ),
     );

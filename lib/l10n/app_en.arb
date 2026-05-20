@@ -394,5 +394,28 @@
   "myCategories": "My Categories",
   "categoryPreferencesTitle": "Category Preferences",
   "categoryPreferencesSubtitle": "Select the categories you want to see. 'All' will show products from your selected categories.",
-  "categoryPreferencesSaved": "Category preferences saved"
+  "categoryPreferencesSaved": "Category preferences saved",
+
+  "bestSellersSubtitle": "Explore the top-selling products loved by thousands of shoppers.",
+  "bestSellersUpdatedDaily": "Updated daily",
+  "topBestSellers": "Top Best Sellers",
+  "getDeal": "Get Deal",
+  "allCategories": "All Categories",
+  "soldThisWeek": "sold this week",
+  "youSaveTodayAmount": "You save {amount} today",
+  "@youSaveTodayAmount": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "whyBestSellers": "Why these are best sellers?",
+  "whyBestSellersDesc": "These products are trending for a reason. Top-rated, top-loved, and top-selling!",
+  "moreCategories": "More",
+  "rankInCategory": "#{rank} in {category}",
+  "@rankInCategory": {
+    "placeholders": {
+      "rank": { "type": "int" },
+      "category": { "type": "String" }
+    }
+  }
 }

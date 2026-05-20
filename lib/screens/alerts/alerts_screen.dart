@@ -115,25 +115,28 @@ class _AlertsScreenState extends State<AlertsScreen> {
         label: Text(l10n.alertNewButton,
             style: GoogleFonts.inter(fontWeight: FontWeight.w600, color: Colors.white)),
       ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator(color: AppColors.brand))
-          : _alerts.isEmpty
-              ? _EmptyView(onAdd: () => _openForm())
-              : RefreshIndicator(
-                  color: AppColors.brand,
-                  onRefresh: _load,
-                  child: ListView.separated(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-                    itemCount: _alerts.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 10),
-                    itemBuilder: (_, i) => _AlertTile(
-                      alert: _alerts[i],
-                      onEdit: () => _openForm(alert: _alerts[i]),
-                      onToggle: () => _toggleActive(_alerts[i]),
-                      onDelete: () => _delete(_alerts[i]),
+      body: SafeArea(
+        top: false,
+        child: _loading
+            ? const Center(child: CircularProgressIndicator(color: AppColors.brand))
+            : _alerts.isEmpty
+                ? _EmptyView(onAdd: () => _openForm())
+                : RefreshIndicator(
+                    color: AppColors.brand,
+                    onRefresh: _load,
+                    child: ListView.separated(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+                      itemCount: _alerts.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 10),
+                      itemBuilder: (_, i) => _AlertTile(
+                        alert: _alerts[i],
+                        onEdit: () => _openForm(alert: _alerts[i]),
+                        onToggle: () => _toggleActive(_alerts[i]),
+                        onDelete: () => _delete(_alerts[i]),
+                      ),
                     ),
                   ),
-                ),
+      ),
     );
   }
 }

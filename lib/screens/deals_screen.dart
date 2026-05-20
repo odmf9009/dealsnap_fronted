@@ -219,7 +219,9 @@ class _DealsScreenState extends State<DealsScreen> {
         onPriceRangeChanged: (v) => setState(() => _priceRange = v),
         onManageCategories: _openCategoryPreferences,
       ),
-      body: RefreshIndicator(
+      body: SafeArea(
+        top: false,
+        child: RefreshIndicator(
       color: AppColors.brand,
       onRefresh: () => _loadDeals(reset: true),
       child: CustomScrollView(
@@ -323,6 +325,7 @@ class _DealsScreenState extends State<DealsScreen> {
           const SliverToBoxAdapter(child: SizedBox(height: 32)),
         ],
       ),
+    ),
     ),
     );
   }

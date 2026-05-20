@@ -70,7 +70,9 @@ class _GroupProductsScreenState extends State<GroupProductsScreen> {
           ],
         ),
       ),
-      body: RefreshIndicator(
+      body: SafeArea(
+        top: false,
+        child: RefreshIndicator(
         color: AppColors.brand,
         onRefresh: _load,
         child: _loading
@@ -80,6 +82,7 @@ class _GroupProductsScreenState extends State<GroupProductsScreen> {
                 : _products.isEmpty
                     ? _buildEmpty()
                     : _buildGrid(cols),
+      ),
       ),
     );
   }

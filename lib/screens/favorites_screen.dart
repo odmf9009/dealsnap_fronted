@@ -68,7 +68,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           style: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 18),
         ),
       ),
-      body: RefreshIndicator(
+      body: SafeArea(
+        top: false,
+        child: RefreshIndicator(
         color: AppColors.brand,
         onRefresh: _load,
         child: _loading
@@ -80,6 +82,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     : _products.isEmpty
                         ? _buildEmpty(l10n)
                         : _buildGrid(),
+      ),
       ),
     );
   }

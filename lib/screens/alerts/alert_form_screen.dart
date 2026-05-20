@@ -133,10 +133,12 @@ class _AlertFormScreenState extends State<AlertFormScreen> {
             ),
         ],
       ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.all(20),
+      body: SafeArea(
+        top: false,
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            padding: const EdgeInsets.all(20),
           children: [
             _Label(l10n.alertType),
             const SizedBox(height: 8),
@@ -275,6 +277,7 @@ class _AlertFormScreenState extends State<AlertFormScreen> {
             const SizedBox(height: 32),
           ],
         ),
+      ),
       ),
     );
   }

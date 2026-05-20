@@ -221,7 +221,9 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
         onPriceRangeChanged: (v) => setState(() => _priceRange = v),
         onManageCategories: _openCategoryPreferences,
       ),
-      body: RefreshIndicator(
+      body: SafeArea(
+        top: false,
+        child: RefreshIndicator(
         color: AppColors.brand,
         onRefresh: () => _load(reset: true),
         child: CustomScrollView(
@@ -313,6 +315,7 @@ class _UpcomingScreenState extends State<UpcomingScreen> {
             const SliverToBoxAdapter(child: SizedBox(height: 32)),
           ],
         ),
+      ),
       ),
     );
   }

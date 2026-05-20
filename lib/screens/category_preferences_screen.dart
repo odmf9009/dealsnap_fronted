@@ -98,7 +98,9 @@ class _CategoryPreferencesScreenState extends State<CategoryPreferencesScreen> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: _loading
+      body: SafeArea(
+        top: false,
+        child: _loading
           ? const Center(child: CircularProgressIndicator(color: AppColors.brand))
           : Column(
               children: [
@@ -199,6 +201,7 @@ class _CategoryPreferencesScreenState extends State<CategoryPreferencesScreen> {
                 ),
               ],
             ),
+      ),
     );
   }
 }

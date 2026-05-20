@@ -36,10 +36,8 @@ class FilterDrawerWidget extends StatelessWidget {
   List<Category> _visibleCategories() {
     if (isLoggedIn && preferredCategoryIds.isNotEmpty) {
       final filtered = categories.where((c) {
-        final key = c.id.isNotEmpty ? c.id : c.slug;
         return preferredCategoryIds.contains(c.id) ||
-            preferredCategoryIds.contains(c.slug) ||
-            preferredCategoryIds.contains(key);
+            preferredCategoryIds.contains(c.slug);
       }).toList();
       return filtered.isNotEmpty ? filtered : categories;
     }

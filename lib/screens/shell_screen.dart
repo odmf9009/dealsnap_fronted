@@ -13,6 +13,7 @@ import 'favorites_screen.dart';
 import 'auth/login_screen.dart';
 import 'profile/profile_screen.dart';
 import 'category_preferences_screen.dart';
+import 'best_sellers_screen.dart';
 import '../services/category_prefs_notifier.dart';
 
 const _kTabHome = 0;
@@ -200,7 +201,16 @@ class _ShellScreenState extends State<ShellScreen> {
                       color: const Color(0xFFF59E0B),
                       label: l10n.bestSellers,
                       selected: false,
-                      onTap: () => _navigate(_kTabDeals),
+                      onTap: () {
+                        _scaffoldKey.currentState?.closeDrawer();
+                        Future.delayed(const Duration(milliseconds: 200), () {
+                          if (!mounted) return;
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const BestSellersScreen()),
+                          );
+                        });
+                      },
                     ),
                     _DrawerNavItem(
                       icon: Icons.trending_up_rounded,
