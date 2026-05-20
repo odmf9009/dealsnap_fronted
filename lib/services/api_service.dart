@@ -160,6 +160,30 @@ class ApiService {
     return list.map((e) => Product.fromJson(e)).toList();
   }
 
+  static Future<DealsResponse> getBestSellers({
+    String? category,
+    int minDiscount = 25,
+    int limit = 20,
+  }) async {
+    final params = {
+      'limit': limit.toString(),
+      'minDiscount': minDiscount.toString(),
+      'source': 'apk',
+      if (category != null && category.isNotEmpty) 'category': category,
+    };
+    final uri = Uri.parse('$_base/api/promos/best-sellers').replace(queryParameters: params);
+    final res = await http.get(uri).timeout(const Duration(seconds: 15));
+    if (res.statusCode != 200) throw Exception('Failed to load best sellers: ${res.statusCode}');
+    final body = jsonDecode(res.body) as Map<String, dynamic>;
+    final products = (body['products'] as List? ?? []).map((e) => Product.fromJson(e)).toList();
+    return DealsResponse(
+      products: products,
+      total: body['total'] ?? 0,
+      productCount: body['total'] ?? 0,
+      page: 1,
+    );
+  }
+
   static Future<List<String>> getCategoryPreferences(String token) async {
     final uri = Uri.parse('$_base/api/users/category-preferences');
     final res = await http.get(uri, headers: {'Authorization': 'Bearer $token'}).timeout(const Duration(seconds: 10));

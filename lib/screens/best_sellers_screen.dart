@@ -68,7 +68,7 @@ class _BestSellersScreenState extends State<BestSellersScreen> {
     });
     try {
       final List<Future<dynamic>> calls = [
-        ApiService.getDeals(limit: 20, category: slug, discount: 20),
+        ApiService.getBestSellers(category: slug, minDiscount: 25),
         if (isFirstLoad) ApiService.getCategories(),
       ];
       final futures = await Future.wait(calls);
