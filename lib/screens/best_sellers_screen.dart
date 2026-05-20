@@ -9,6 +9,7 @@ import '../models/product.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../services/category_prefs_notifier.dart';
+import '../services/categories_notifier.dart';
 import '../theme/app_theme.dart';
 
 class BestSellersScreen extends StatefulWidget {
@@ -20,7 +21,6 @@ class BestSellersScreen extends StatefulWidget {
 
 class _BestSellersScreenState extends State<BestSellersScreen> {
   List<Product> _products = [];
-  List<Category> _allCategories = [];
   String? _selectedSlug;
   bool _loading = true;       // true only on very first load (categories not yet fetched)
   bool _productsLoading = false; // true when switching categories
@@ -32,53 +32,55 @@ class _BestSellersScreenState extends State<BestSellersScreen> {
   void initState() {
     super.initState();
     CategoryPrefsNotifier.instance.addListener(_onPrefsChanged);
+    CategoriesNotifier.instance.addListener(_onCategoriesChanged);
     _load(null);
   }
 
   @override
   void dispose() {
     CategoryPrefsNotifier.instance.removeListener(_onPrefsChanged);
+    CategoriesNotifier.instance.removeListener(_onCategoriesChanged);
     super.dispose();
   }
 
-  void _onPrefsChanged() {
-    if (mounted) setState(() {});
-  }
+  void _onPrefsChanged() { if (mounted) setState(() {}); }
+  void _onCategoriesChanged() { if (mounted) _load(null); }
 
   List<Category> get _visibleCategories {
+    final all = CategoriesNotifier.instance.categories;
     if (_auth.isLoggedIn) {
       final prefIds = CategoryPrefsNotifier.instance.ids;
       if (prefIds.isNotEmpty) {
-        return _allCategories.where((c) => prefIds.contains(c.id)).toList();
+        return all.where((c) => prefIds.contains(c.id)).toList();
       }
     }
-    return _allCategories;
+    return all;
   }
 
   Future<void> _load(String? slug) async {
-    final isFirstLoad = _allCategories.isEmpty;
     setState(() {
       _selectedSlug = slug;
       _error = null;
-      if (isFirstLoad) {
+      if (_products.isEmpty) {
         _loading = true;
       } else {
         _productsLoading = true;
       }
     });
     try {
-      final List<Future<dynamic>> calls = [
-        ApiService.getBestSellers(category: slug, minDiscount: 25),
-        if (isFirstLoad) ApiService.getCategories(),
-      ];
-      final futures = await Future.wait(calls);
-      final res = futures[0] as DealsResponse;
+      // Si slug es null (Todas), mandamos los slugs de las categorías visibles
+      final List<String>? slugsToSend = slug == null
+          ? (_visibleCategories.isEmpty ? null : _visibleCategories.map((c) => c.slug).toList())
+          : null;
+
+      final res = await ApiService.getBestSellers(
+        category: slug,
+        categories: slugsToSend,
+        minDiscount: 25,
+      );
       if (mounted) {
         setState(() {
           _products = res.products;
-          if (isFirstLoad && futures.length > 1) {
-            _allCategories = futures[1] as List<Category>;
-          }
           _loading = false;
           _productsLoading = false;
         });
@@ -155,7 +157,7 @@ class _BestSellersScreenState extends State<BestSellersScreen> {
                                 product: _products[i],
                                 rank: i + 1,
                                 locale: locale,
-                                categories: _allCategories,
+                                categories: CategoriesNotifier.instance.categories,
                               ),
                               childCount: _products.length,
                             ),

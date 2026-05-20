@@ -162,6 +162,7 @@ class ApiService {
 
   static Future<DealsResponse> getBestSellers({
     String? category,
+    List<String>? categories,
     int minDiscount = 25,
     int limit = 20,
   }) async {
@@ -170,6 +171,7 @@ class ApiService {
       'minDiscount': minDiscount.toString(),
       'source': 'apk',
       if (category != null && category.isNotEmpty) 'category': category,
+      if (categories != null && categories.isNotEmpty) 'categories': categories.join(','),
     };
     final uri = Uri.parse('$_base/api/promos/best-sellers').replace(queryParameters: params);
     final res = await http.get(uri).timeout(const Duration(seconds: 15));

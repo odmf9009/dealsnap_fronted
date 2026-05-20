@@ -6,6 +6,7 @@ import '../l10n/generated/app_localizations.dart';
 import '../models/product.dart';
 import '../models/category.dart';
 import '../services/api_service.dart';
+import '../services/categories_notifier.dart';
 import '../theme/app_theme.dart';
 import '../widgets/product_card.dart';
 
@@ -18,7 +19,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Product> _allProducts = [];
-  List<Category> _categories = [];
   bool _loading = true;
   String? _error;
 
@@ -35,16 +35,10 @@ class _HomeScreenState extends State<HomeScreen> {
       _error = null;
     });
     try {
-      final results = await Future.wait([
-        ApiService.getDeals(limit: 48),
-        ApiService.getCategories(),
-      ]);
+      final dealsRes = await ApiService.getDeals(limit: 48);
       if (!mounted) return;
-      final dealsRes = results[0] as DealsResponse;
-      final cats = results[1] as List<Category>;
       setState(() {
         _allProducts = dealsRes.products;
-        _categories = cats;
         _loading = false;
       });
     } catch (e) {
@@ -93,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
             if (_loading)
               const _ShimmerCategoryRow()
             else
-              _CategoriesRow(categories: _categories),
+              _CategoriesRow(categories: CategoriesNotifier.instance.categories),
             const SizedBox(height: 28),
 
             _SectionHeader(title: l10n.saved, onSeeAll: () {}),

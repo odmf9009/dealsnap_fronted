@@ -8,6 +8,7 @@ import 'category_preferences_screen.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../services/category_prefs_notifier.dart';
+import '../services/categories_notifier.dart';
 import '../theme/app_theme.dart';
 import '../widgets/product_card.dart';
 import '../widgets/sort_bar.dart';
@@ -31,7 +32,6 @@ class EndingSoonScreen extends StatefulWidget {
 class _EndingSoonScreenState extends State<EndingSoonScreen> {
   final _auth = AuthService();
   List<Product> _products = [];
-  List<Category> _categories = [];
   List<String> _preferredCategoryIds = [];
 
   String? _selectedCategory;
@@ -55,6 +55,7 @@ class _EndingSoonScreenState extends State<EndingSoonScreen> {
     super.initState();
     _preferredCategoryIds = CategoryPrefsNotifier.instance.ids;
     CategoryPrefsNotifier.instance.addListener(_onPrefsChanged);
+    CategoriesNotifier.instance.addListener(_onCategoriesChanged);
     _loadFilters();
     _load(reset: true);
     _scrollController.addListener(_onScroll);
@@ -63,9 +64,12 @@ class _EndingSoonScreenState extends State<EndingSoonScreen> {
   @override
   void dispose() {
     CategoryPrefsNotifier.instance.removeListener(_onPrefsChanged);
+    CategoriesNotifier.instance.removeListener(_onCategoriesChanged);
     _scrollController.dispose();
     super.dispose();
   }
+
+  void _onCategoriesChanged() { if (mounted) setState(() {}); }
 
   void _onPrefsChanged() {
     if (!mounted) return;
@@ -85,18 +89,11 @@ class _EndingSoonScreenState extends State<EndingSoonScreen> {
   Future<void> _loadFilters() async {
     try {
       final token = _auth.user?.token;
-      final futures = <Future>[
-        ApiService.getCategories(),
-        if (token != null) ApiService.getCategoryPreferences(token),
-      ];
-      final results = await Future.wait(futures);
-      if (!mounted) return;
-      setState(() {
-        _categories = results[0] as List<Category>;
-        if (token != null && results.length > 1) {
-          _preferredCategoryIds = results[1] as List<String>;
-        }
-      });
+      if (token != null) {
+        final prefs = await ApiService.getCategoryPreferences(token);
+        if (!mounted) return;
+        setState(() => _preferredCategoryIds = prefs);
+      }
     } catch (_) {}
   }
 
@@ -209,7 +206,7 @@ class _EndingSoonScreenState extends State<EndingSoonScreen> {
         ),
       ),
       endDrawer: FilterDrawerWidget(
-        categories: _categories,
+        categories: CategoriesNotifier.instance.categories,
         preferredCategoryIds: _preferredCategoryIds,
         selectedCategory: _selectedCategory,
         discountRange: _discountRange,

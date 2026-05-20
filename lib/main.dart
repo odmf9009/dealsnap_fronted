@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'l10n/generated/app_localizations.dart';
 import 'core/locale/locale_provider.dart';
 import 'services/auth_service.dart';
+import 'services/categories_notifier.dart';
 import 'theme/app_theme.dart';
 import 'screens/shell_screen.dart';
 
@@ -14,6 +15,7 @@ void main() async {
     statusBarIconBrightness: Brightness.dark,
   ));
   await AuthService().init();
+  CategoriesNotifier.instance.load();
   runApp(
     const ProviderScope(
       child: PromOffApp(),

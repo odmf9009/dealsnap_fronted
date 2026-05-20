@@ -5,6 +5,7 @@ import '../models/category.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../services/category_prefs_notifier.dart';
+import '../services/categories_notifier.dart';
 import '../theme/app_theme.dart';
 
 class CategoryPreferencesScreen extends StatefulWidget {
@@ -16,7 +17,6 @@ class CategoryPreferencesScreen extends StatefulWidget {
 
 class _CategoryPreferencesScreenState extends State<CategoryPreferencesScreen> {
   final _auth = AuthService();
-  List<Category> _categories = [];
   Set<String> _selected = {};
   bool _loading = true;
   bool _saving = false;
@@ -31,15 +31,9 @@ class _CategoryPreferencesScreenState extends State<CategoryPreferencesScreen> {
     final token = _auth.user?.token;
     if (token == null) return;
     try {
-      final results = await Future.wait([
-        ApiService.getCategories(),
-        ApiService.getCategoryPreferences(token),
-      ]);
+      final prefs = await ApiService.getCategoryPreferences(token);
       if (!mounted) return;
-      final cats = results[0] as List<Category>;
-      final prefs = results[1] as List<String>;
       setState(() {
-        _categories = cats;
         _selected = prefs.toSet();
         _loading = false;
       });
@@ -117,7 +111,7 @@ class _CategoryPreferencesScreenState extends State<CategoryPreferencesScreen> {
                     child: Wrap(
                       spacing: 10,
                       runSpacing: 10,
-                      children: _categories.map((cat) {
+                      children: CategoriesNotifier.instance.categories.map((cat) {
                         final catKey = cat.id.isNotEmpty ? cat.id : cat.slug;
                         final isOn = _selected.contains(catKey);
                         return GestureDetector(
