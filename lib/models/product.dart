@@ -74,7 +74,7 @@ class Product {
       discountPercentage: (json['discountPercentage'] ?? 0).toInt(),
       category: json['category'] ?? '',
       url: json['url'] ?? '',
-      promo: json['promo'] != null ? PromoInfo.fromJson(json['promo']) : null,
+      promo: (json['promo'] is Map<String, dynamic>) ? PromoInfo.fromJson(json['promo'] as Map<String, dynamic>) : null,
       isBestDeal: json['isBestDeal'] ?? false,
       dealScore: json['dealScore']?.toDouble(),
       source: json['source'],
