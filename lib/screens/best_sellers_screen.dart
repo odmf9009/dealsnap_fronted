@@ -922,7 +922,8 @@ class _BestSellerCardState extends State<_BestSellerCard> {
             ),
           ),
 
-          Row(
+          IntrinsicHeight(
+            child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // ── Rank badge ──────────────────────────────────────────────────
@@ -1153,6 +1154,7 @@ class _BestSellerCardState extends State<_BestSellerCard> {
                 ),
               ),
             ],
+          ),
           ),
         ],
       ),
