@@ -480,14 +480,43 @@ class _ProductCardState extends State<ProductCard> {
 
 // ── How to use centered dialog ─────────────────────────────────────────────────
 
-class _HowToUseDialog extends StatelessWidget {
+class _HowToUseDialog extends StatefulWidget {
   final Product product;
   const _HowToUseDialog({required this.product});
 
+  @override
+  State<_HowToUseDialog> createState() => _HowToUseDialogState();
+}
+
+class _HowToUseDialogState extends State<_HowToUseDialog> {
+  bool _loadingUrl = true;
+  String? _amazonUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUrl();
+  }
+
+  String? _extractAsin(String url) {
+    final match = RegExp(r'/dp/([A-Z0-9]{10})').firstMatch(url);
+    return match?.group(1);
+  }
+
+  Future<void> _fetchUrl() async {
+    final asin = _extractAsin(widget.product.url);
+    if (asin != null) {
+      final url = await ApiService.getAmazonItemUrl(asin);
+      if (mounted) setState(() { _amazonUrl = url ?? widget.product.url; _loadingUrl = false; });
+    } else {
+      if (mounted) setState(() { _amazonUrl = widget.product.url; _loadingUrl = false; });
+    }
+  }
+
   Future<void> _launch(BuildContext context) async {
     Navigator.pop(context);
-    final code = product.promoCode;
-    if (product.hasPromoCode && code != null) {
+    final code = widget.product.promoCode;
+    if (widget.product.hasPromoCode && code != null) {
       await Clipboard.setData(ClipboardData(text: code));
       if (context.mounted) {
         final l10n = AppLocalizations.of(context);
@@ -514,8 +543,9 @@ class _HowToUseDialog extends StatelessWidget {
         );
       }
     }
-    if (product.url.isNotEmpty) {
-      final uri = Uri.parse(product.url);
+    final urlToOpen = _amazonUrl ?? widget.product.url;
+    if (urlToOpen.isNotEmpty) {
+      final uri = Uri.parse(urlToOpen);
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
       }
@@ -668,12 +698,16 @@ class _HowToUseDialog extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: FilledButton.icon(
-                  onPressed: () => _launch(context),
-                  icon: const Icon(Icons.local_offer_rounded, size: 16),
-                  label: Text(l10n.getDiscountOnAmazon),
+                  onPressed: _loadingUrl ? null : () => _launch(context),
+                  icon: _loadingUrl
+                      ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                      : const Icon(Icons.local_offer_rounded, size: 16),
+                  label: Text(_loadingUrl ? l10n.loading : l10n.getDiscountOnAmazon),
                   style: FilledButton.styleFrom(
                     backgroundColor: const Color(0xFFFFA41C),
                     foregroundColor: Colors.white,
+                    disabledBackgroundColor: const Color(0xFFFFD080),
+                    disabledForegroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     textStyle: GoogleFonts.inter(
                       fontSize: 13,

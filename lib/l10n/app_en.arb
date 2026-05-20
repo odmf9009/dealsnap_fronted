@@ -418,5 +418,6 @@
       "category": { "type": "String" }
     }
   },
-  "seePriceOnAmazon": "See price on Amazon"
+  "seePriceOnAmazon": "See price on Amazon",
+  "loading": "Loading..."
 }

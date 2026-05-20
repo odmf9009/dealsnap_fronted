@@ -191,6 +191,20 @@ class ApiService {
     );
   }
 
+  static Future<String?> getAmazonItemUrl(String asin) async {
+    try {
+      final uri = Uri.parse('$_base/api/amazon/items').replace(queryParameters: {'asins': asin});
+      final res = await http.get(uri).timeout(const Duration(seconds: 10));
+      if (res.statusCode != 200) return null;
+      final body = jsonDecode(res.body) as Map<String, dynamic>;
+      final items = body['items'] as List?;
+      if (items == null || items.isEmpty) return null;
+      return (items.first as Map<String, dynamic>)['url'] as String?;
+    } catch (_) {
+      return null;
+    }
+  }
+
   static Future<List<String>> getCategoryPreferences(String token) async {
     final uri = Uri.parse('$_base/api/users/category-preferences');
     final res = await http.get(uri, headers: {'Authorization': 'Bearer $token'}).timeout(const Duration(seconds: 10));
