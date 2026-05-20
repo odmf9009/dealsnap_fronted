@@ -1004,44 +1004,56 @@ class _BestSellerCardState extends State<_BestSellerCard> {
                       const SizedBox(height: 5),
 
                       // Price row
-                      Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        spacing: 6,
-                        children: [
-                          Text(
-                            '\$${p.currentPrice.toStringAsFixed(2)}',
-                            style: GoogleFonts.inter(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w800,
-                              color: const Color(0xFFF97316),
-                            ),
-                          ),
-                          Text(
-                            '\$${p.originalPrice.toStringAsFixed(2)}',
-                            style: GoogleFonts.inter(
-                              fontSize: 11,
-                              color: AppColors.textMuted,
-                              decoration: TextDecoration.lineThrough,
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF10B981),
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: Text(
-                              '${p.discountPercentage}% OFF',
+                      if (p.currentPrice > 0)
+                        Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: 6,
+                          children: [
+                            Text(
+                              '\$${p.currentPrice.toStringAsFixed(2)}',
                               style: GoogleFonts.inter(
-                                fontSize: 9,
+                                fontSize: 15,
                                 fontWeight: FontWeight.w800,
-                                color: Colors.white,
+                                color: const Color(0xFFF97316),
                               ),
                             ),
+                            if (p.originalPrice > p.currentPrice)
+                              Text(
+                                '\$${p.originalPrice.toStringAsFixed(2)}',
+                                style: GoogleFonts.inter(
+                                  fontSize: 11,
+                                  color: AppColors.textMuted,
+                                  decoration: TextDecoration.lineThrough,
+                                ),
+                              ),
+                            if (p.discountPercentage > 0)
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 5, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF10B981),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Text(
+                                  '${p.discountPercentage}% OFF',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        )
+                      else
+                        Text(
+                          l10n.seePriceOnAmazon,
+                          style: GoogleFonts.inter(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFFF97316),
                           ),
-                        ],
-                      ),
+                        ),
                       const SizedBox(height: 4),
 
                       // You save today

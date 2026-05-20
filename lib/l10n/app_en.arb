@@ -417,5 +417,6 @@
       "rank": { "type": "int" },
       "category": { "type": "String" }
     }
-  }
+  },
+  "seePriceOnAmazon": "See price on Amazon"
 }

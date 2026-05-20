@@ -325,5 +325,6 @@
   "whyBestSellers": "¿Por qué son los más vendidos?",
   "whyBestSellersDesc": "Estos productos son tendencia por una razón. Mejor valorados, más queridos y más vendidos.",
   "moreCategories": "Más",
-  "rankInCategory": "#{rank} en {category}"
+  "rankInCategory": "#{rank} en {category}",
+  "seePriceOnAmazon": "Ver precio en Amazon"
 }
