@@ -904,26 +904,32 @@ class _BestSellerCardState extends State<_BestSellerCard> {
           ),
         ],
       ),
-      child: Stack(
-        children: [
-          // ── Main row layout ─────────────────────────────────────────────────
-          IntrinsicHeight(
-            child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Space reserved for the badge (positioned above)
-              const SizedBox(width: 52),
-
-              // ── Product image (fills full card height, no padding) ────────────
-              SizedBox(
-                width: 120,
-                child: p.image != null
-                    ? CachedNetworkImage(
-                        imageUrl: p.image!,
-                        fit: BoxFit.cover,
-                        placeholder: (_, __) =>
-                            Container(color: AppColors.surfaceVariant),
-                        errorWidget: (_, __, ___) => Container(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(14),
+        child: Stack(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // ── Full-width product image ──────────────────────────────
+                SizedBox(
+                  height: 160,
+                  child: p.image != null
+                      ? CachedNetworkImage(
+                          imageUrl: p.image!,
+                          fit: BoxFit.cover,
+                          placeholder: (_, __) =>
+                              Container(color: AppColors.surfaceVariant),
+                          errorWidget: (_, __, ___) => Container(
+                            color: AppColors.surfaceVariant,
+                            child: const Icon(
+                              Icons.image_not_supported_outlined,
+                              color: AppColors.textMuted,
+                              size: 32,
+                            ),
+                          ),
+                        )
+                      : Container(
                           color: AppColors.surfaceVariant,
                           child: const Icon(
                             Icons.image_not_supported_outlined,
@@ -931,21 +937,11 @@ class _BestSellerCardState extends State<_BestSellerCard> {
                             size: 32,
                           ),
                         ),
-                      )
-                    : Container(
-                        color: AppColors.surfaceVariant,
-                        child: const Icon(
-                          Icons.image_not_supported_outlined,
-                          color: AppColors.textMuted,
-                          size: 32,
-                        ),
-                      ),
-              ),
+                ),
 
-              // ── Content ──────────────────────────────────────────────────────
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+                // ── Content below image ───────────────────────────────────
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -1114,20 +1110,18 @@ class _BestSellerCardState extends State<_BestSellerCard> {
                     ],
                   ),
                 ),
-              ),
-            ],
-          ),
-          ),
+              ],
+            ),
 
-          // ── Rank badge ribbon (fixed height, top-left) ──────────────────────
+          // ── Rank badge (over image, small left margin) ─────────────────
           Positioned(
             top: 0,
-            left: 0,
+            left: 8,
             child: ClipPath(
               clipper: const _RankBadgeClipper(),
               child: Container(
-                width: 52,
-                height: 62,
+                width: 38,
+                height: 56,
                 color: const Color(0xFF1B3A6B),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -1156,20 +1150,22 @@ class _BestSellerCardState extends State<_BestSellerCard> {
             ),
           ),
 
-          // ── Heart icon (top-right) ───────────────────────────────────────────
+          // ── Heart icon (top-right over image) ───────────────────────────
           Positioned(
-            top: 10,
-            right: 10,
+            top: 8,
+            right: 8,
             child: GestureDetector(
               onTap: _toggleFavorite,
               child: Icon(
                 _isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-                size: 20,
-                color: _isFavorite ? AppColors.danger : AppColors.textMuted,
+                size: 22,
+                color: _isFavorite ? AppColors.danger : Colors.white,
+                shadows: const [Shadow(color: Colors.black54, blurRadius: 4)],
               ),
             ),
           ),
         ],
+      ),
       ),
     );
   }
@@ -1182,24 +1178,32 @@ class _RankBadgeClipper extends CustomClipper<Path> {
 
   @override
   Path getClip(Size size) {
-    const double topRadius = 8.0;
-    const double notchDepth = 14.0;
+    const double topRadius = 6.0;
+    const double bottomRadius = 5.0;
+    const double notchHeight = 13.0;
+
     return Path()
+      // top-left rounded corner
       ..moveTo(0, topRadius)
-      ..arcToPoint(
-        const Offset(topRadius, 0),
-        radius: const Radius.circular(topRadius),
-        clockwise: false,
-      )
+      ..arcToPoint(Offset(topRadius, 0),
+          radius: const Radius.circular(topRadius), clockwise: false)
+      // top edge
       ..lineTo(size.width - topRadius, 0)
-      ..arcToPoint(
-        Offset(size.width, topRadius),
-        radius: const Radius.circular(topRadius),
-        clockwise: true,
-      )
-      ..lineTo(size.width, size.height - notchDepth)
-      ..lineTo(size.width / 2, size.height)
-      ..lineTo(0, size.height - notchDepth)
+      // top-right rounded corner
+      ..arcToPoint(Offset(size.width, topRadius),
+          radius: const Radius.circular(topRadius), clockwise: true)
+      // right side
+      ..lineTo(size.width, size.height - bottomRadius)
+      // bottom-right rounded corner (tip goes down)
+      ..arcToPoint(Offset(size.width - bottomRadius, size.height),
+          radius: const Radius.circular(bottomRadius), clockwise: true)
+      // diagonal up-left to V peak (pico hacia adentro)
+      ..lineTo(size.width / 2, size.height - notchHeight)
+      // diagonal down-left to bottom-left area
+      ..lineTo(bottomRadius, size.height)
+      // bottom-left rounded corner (tip goes down)
+      ..arcToPoint(Offset(0, size.height - bottomRadius),
+          radius: const Radius.circular(bottomRadius), clockwise: true)
       ..close();
   }
 
