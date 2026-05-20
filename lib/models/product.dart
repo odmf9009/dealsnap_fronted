@@ -42,6 +42,8 @@ class Product {
   final int groupCount;
   final String? groupKey;
   final bool favorite;
+  final double rating;
+  final int reviewCount;
 
   const Product({
     required this.id,
@@ -61,6 +63,8 @@ class Product {
     this.groupCount = 1,
     this.groupKey,
     this.favorite = false,
+    this.rating = 0.0,
+    this.reviewCount = 0,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -82,6 +86,8 @@ class Product {
       groupCount: (json['groupCount'] ?? 1).toInt(),
       groupKey: json['groupKey'] as String?,
       favorite: (json['favorite'] as bool?) ?? false,
+      rating: (json['rating'] ?? 0).toDouble(),
+      reviewCount: (json['reviewCount'] ?? 0).toInt(),
     );
   }
 

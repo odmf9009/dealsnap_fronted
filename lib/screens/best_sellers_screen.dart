@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -867,22 +866,6 @@ class _BestSellerCardState extends State<_BestSellerCard> {
     _isFavorite = widget.product.favorite;
   }
 
-  double get _rating {
-    final seed = widget.product.id.codeUnits.fold(0, (a, b) => a + b);
-    return 4.0 + (seed % 10) / 10.0;
-  }
-
-  int get _reviewCount {
-    final seed = widget.product.asin.codeUnits.fold(0, (a, b) => a + b);
-    return max(200, (seed % 8000) + 500 - (widget.rank * 50)).clamp(200, 9999);
-  }
-
-  String get _soldCount {
-    const bases = [124, 87, 71, 53, 42, 38, 29, 24, 19, 16, 14, 12, 10, 9, 8, 7, 6, 5, 5, 4];
-    final idx = (widget.rank - 1).clamp(0, bases.length - 1);
-    final val = bases[idx];
-    return val >= 10 ? '${(val / 10.0).toStringAsFixed(1)}K+' : '${val * 100}+';
-  }
 
   String get _categoryLabel {
     final cat = widget.categories.firstWhere(
@@ -1054,7 +1037,7 @@ class _BestSellerCardState extends State<_BestSellerCard> {
                       const SizedBox(height: 5),
 
                       // Star rating
-                      _StarRating(rating: _rating, count: _reviewCount),
+                      _StarRating(rating: p.rating, count: p.reviewCount),
                       const SizedBox(height: 5),
 
                       // Price row
@@ -1132,29 +1115,10 @@ class _BestSellerCardState extends State<_BestSellerCard> {
                         ),
                       const SizedBox(height: 3),
 
-                      // Sold this week + Get Deal button
+                      // Get Deal button
                       Row(
                         children: [
-                          Expanded(
-                            child: Row(
-                              children: [
-                                const Icon(Icons.local_fire_department_rounded,
-                                    size: 13, color: Color(0xFFF97316)),
-                                const SizedBox(width: 4),
-                                Flexible(
-                                  child: Text(
-                                    '$_soldCount ${l10n.soldThisWeek}',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.inter(
-                                      fontSize: 11,
-                                      color: AppColors.textSecondary,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 8),
+                          const Spacer(),
                           SizedBox(
                             height: 36,
                             child: ElevatedButton.icon(
@@ -1297,23 +1261,25 @@ class _StarRating extends StatelessWidget {
     return Row(
       children: [
         ...List.generate(5, (i) {
-          final filled = i < rating.floor();
-          final half = !filled && i < rating;
+          final filled = rating > 0 && i < rating.floor();
+          final half = rating > 0 && !filled && i < rating;
           return Icon(
             half
                 ? Icons.star_half_rounded
-                : (filled
-                    ? Icons.star_rounded
-                    : Icons.star_outline_rounded),
+                : (filled ? Icons.star_rounded : Icons.star_outline_rounded),
             size: 13,
-            color: const Color(0xFFF59E0B),
+            color: rating > 0
+                ? const Color(0xFFF59E0B)
+                : AppColors.divider,
           );
         }),
-        const SizedBox(width: 4),
-        Text(
-          '(${_fmt(count)})',
-          style: GoogleFonts.inter(fontSize: 11, color: AppColors.textSecondary),
-        ),
+        if (count > 0) ...[
+          const SizedBox(width: 4),
+          Text(
+            '(${_fmt(count)})',
+            style: GoogleFonts.inter(fontSize: 11, color: AppColors.textSecondary),
+          ),
+        ],
       ],
     );
   }
