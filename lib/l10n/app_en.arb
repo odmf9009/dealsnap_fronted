@@ -419,5 +419,6 @@
     }
   },
   "seePriceOnAmazon": "See price on Amazon",
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "refresh": "Refresh"
 }

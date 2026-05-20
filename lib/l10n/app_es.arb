@@ -327,5 +327,6 @@
   "moreCategories": "Más",
   "rankInCategory": "#{rank} en {category}",
   "seePriceOnAmazon": "Ver precio en Amazon",
-  "loading": "Cargando..."
+  "loading": "Cargando...",
+  "refresh": "Actualizar"
 }

@@ -189,34 +189,56 @@ class _BestSellersScreenState extends State<BestSellersScreen> {
                     ? _buildError(l10n)
                     : _products.isEmpty
                         ? Center(
-                            child: Text(
-                              l10n.noDealsFound,
-                              style: GoogleFonts.inter(color: AppColors.textSecondary),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.inbox_outlined, size: 48, color: AppColors.textMuted),
+                                const SizedBox(height: 12),
+                                Text(
+                                  l10n.noDealsFound,
+                                  style: GoogleFonts.inter(color: AppColors.textSecondary),
+                                ),
+                                const SizedBox(height: 16),
+                                OutlinedButton.icon(
+                                  onPressed: () => _load(_selectedSlug),
+                                  icon: const Icon(Icons.refresh_rounded, size: 18),
+                                  label: Text(l10n.refresh),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: AppColors.brand,
+                                    side: const BorderSide(color: AppColors.brand),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                  ),
+                                ),
+                              ],
                             ),
                           )
-                        : CustomScrollView(
-                        controller: _scrollController,
-                        slivers: [
-                          SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (ctx, i) => _BestSellerCard(
-                                product: _products[i],
-                                rank: i + 1,
-                                locale: locale,
-                                categories: CategoriesNotifier.instance.categories,
+                        : RefreshIndicator(
+                        color: AppColors.brand,
+                        onRefresh: () => _load(_selectedSlug),
+                        child: CustomScrollView(
+                          controller: _scrollController,
+                          slivers: [
+                            SliverList(
+                              delegate: SliverChildBuilderDelegate(
+                                (ctx, i) => _BestSellerCard(
+                                  product: _products[i],
+                                  rank: i + 1,
+                                  locale: locale,
+                                  categories: CategoriesNotifier.instance.categories,
+                                ),
+                                childCount: _products.length,
                               ),
-                              childCount: _products.length,
                             ),
-                          ),
-                          SliverToBoxAdapter(
-                            child: _loadingMore
-                                ? const Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 20),
-                                    child: Center(child: CircularProgressIndicator(color: AppColors.brand, strokeWidth: 2)),
-                                  )
-                                : const SizedBox(height: 8),
-                          ),
-                        ],
+                            SliverToBoxAdapter(
+                              child: _loadingMore
+                                  ? const Padding(
+                                      padding: EdgeInsets.symmetric(vertical: 20),
+                                      child: Center(child: CircularProgressIndicator(color: AppColors.brand, strokeWidth: 2)),
+                                    )
+                                  : const SizedBox(height: 8),
+                            ),
+                          ],
+                        ),
                       ),
           ),
 
