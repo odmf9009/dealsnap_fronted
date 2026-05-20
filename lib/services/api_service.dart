@@ -9,6 +9,7 @@ class DealsResponse {
   final int total;
   final int productCount;
   final int page;
+  final bool hasMore;
   final List<String> categories;
   final List<int> discounts;
 
@@ -17,6 +18,7 @@ class DealsResponse {
     required this.total,
     required this.productCount,
     required this.page,
+    this.hasMore = false,
     this.categories = const [],
     this.discounts = const [],
   });
@@ -164,17 +166,19 @@ class ApiService {
     String? category,
     List<String>? categories,
     int minDiscount = 25,
-    int limit = 20,
+    int limit = 10,
+    int page = 1,
   }) async {
     final params = {
       'limit': limit.toString(),
       'minDiscount': minDiscount.toString(),
+      'page': page.toString(),
       'source': 'apk',
       if (category != null && category.isNotEmpty) 'category': category,
       if (categories != null && categories.isNotEmpty) 'categories': categories.join(','),
     };
     final uri = Uri.parse('$_base/api/promos/best-sellers').replace(queryParameters: params);
-    final res = await http.get(uri).timeout(const Duration(seconds: 15));
+    final res = await http.get(uri).timeout(const Duration(seconds: 30));
     if (res.statusCode != 200) throw Exception('Failed to load best sellers: ${res.statusCode}');
     final body = jsonDecode(res.body) as Map<String, dynamic>;
     final products = (body['products'] as List? ?? []).map((e) => Product.fromJson(e)).toList();
@@ -182,7 +186,8 @@ class ApiService {
       products: products,
       total: body['total'] ?? 0,
       productCount: body['total'] ?? 0,
-      page: 1,
+      page: page,
+      hasMore: body['hasMore'] ?? false,
     );
   }
 

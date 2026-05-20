@@ -22,17 +22,22 @@ class BestSellersScreen extends StatefulWidget {
 class _BestSellersScreenState extends State<BestSellersScreen> {
   List<Product> _products = [];
   String? _selectedSlug;
-  bool _loading = true;       // true only on very first load (categories not yet fetched)
-  bool _productsLoading = false; // true when switching categories
+  bool _loading = true;
+  bool _productsLoading = false;
+  bool _loadingMore = false;
+  bool _hasMore = true;
+  int _page = 1;
   String? _error;
 
   final _auth = AuthService();
+  final _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     CategoryPrefsNotifier.instance.addListener(_onPrefsChanged);
     CategoriesNotifier.instance.addListener(_onCategoriesChanged);
+    _scrollController.addListener(_onScroll);
     _load(null);
   }
 
@@ -40,7 +45,15 @@ class _BestSellersScreenState extends State<BestSellersScreen> {
   void dispose() {
     CategoryPrefsNotifier.instance.removeListener(_onPrefsChanged);
     CategoriesNotifier.instance.removeListener(_onCategoriesChanged);
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 300) {
+      _loadMore();
+    }
   }
 
   void _onPrefsChanged() { if (mounted) setState(() {}); }
@@ -61,6 +74,8 @@ class _BestSellersScreenState extends State<BestSellersScreen> {
     setState(() {
       _selectedSlug = slug;
       _error = null;
+      _page = 1;
+      _hasMore = true;
       if (_products.isEmpty) {
         _loading = true;
       } else {
@@ -68,7 +83,6 @@ class _BestSellersScreenState extends State<BestSellersScreen> {
       }
     });
     try {
-      // Si slug es null (Todas), mandamos los slugs de las categorías visibles
       final List<String>? slugsToSend = slug == null
           ? (_visibleCategories.isEmpty ? null : _visibleCategories.map((c) => c.slug).toList())
           : null;
@@ -77,10 +91,13 @@ class _BestSellersScreenState extends State<BestSellersScreen> {
         category: slug,
         categories: slugsToSend,
         minDiscount: 25,
+        limit: 10,
+        page: 1,
       );
       if (mounted) {
         setState(() {
           _products = res.products;
+          _hasMore = res.hasMore;
           _loading = false;
           _productsLoading = false;
         });
@@ -93,6 +110,35 @@ class _BestSellersScreenState extends State<BestSellersScreen> {
           _productsLoading = false;
         });
       }
+    }
+  }
+
+  Future<void> _loadMore() async {
+    if (_loadingMore || !_hasMore) return;
+    setState(() => _loadingMore = true);
+    try {
+      final nextPage = _page + 1;
+      final List<String>? slugsToSend = _selectedSlug == null
+          ? (_visibleCategories.isEmpty ? null : _visibleCategories.map((c) => c.slug).toList())
+          : null;
+
+      final res = await ApiService.getBestSellers(
+        category: _selectedSlug,
+        categories: slugsToSend,
+        minDiscount: 25,
+        limit: 10,
+        page: nextPage,
+      );
+      if (mounted) {
+        setState(() {
+          _products.addAll(res.products);
+          _page = nextPage;
+          _hasMore = res.hasMore;
+          _loadingMore = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) setState(() => _loadingMore = false);
     }
   }
 
@@ -150,6 +196,7 @@ class _BestSellersScreenState extends State<BestSellersScreen> {
                             ),
                           )
                         : CustomScrollView(
+                        controller: _scrollController,
                         slivers: [
                           SliverList(
                             delegate: SliverChildBuilderDelegate(
@@ -162,7 +209,14 @@ class _BestSellersScreenState extends State<BestSellersScreen> {
                               childCount: _products.length,
                             ),
                           ),
-                          const SliverToBoxAdapter(child: SizedBox(height: 8)),
+                          SliverToBoxAdapter(
+                            child: _loadingMore
+                                ? const Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 20),
+                                    child: Center(child: CircularProgressIndicator(color: AppColors.brand, strokeWidth: 2)),
+                                  )
+                                : const SizedBox(height: 8),
+                          ),
                         ],
                       ),
           ),
