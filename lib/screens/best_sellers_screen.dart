@@ -968,8 +968,8 @@ class _BestSellerCardState extends State<_BestSellerCard> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: SizedBox(
-                    width: 80,
-                    height: 80,
+                    width: 100,
+                    height: 100,
                     child: p.image != null
                         ? CachedNetworkImage(
                             imageUrl: p.image!,
@@ -1000,28 +1000,39 @@ class _BestSellerCardState extends State<_BestSellerCard> {
               // ── Content ──────────────────────────────────────────────────────
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 10, 40, 10),
+                  padding: const EdgeInsets.fromLTRB(0, 10, 36, 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Category rank badge
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.trending_up_rounded,
-                            size: 12,
-                            color: Color(0xFF10B981),
-                          ),
-                          const SizedBox(width: 3),
-                          Text(
-                            l10n.rankInCategory(widget.rank, _categoryLabel),
-                            style: GoogleFonts.inter(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                              color: const Color(0xFF10B981),
+                      // Category rank chip
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFECFDF5),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.trending_up_rounded,
+                              size: 12,
+                              color: Color(0xFF10B981),
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 3),
+                            Flexible(
+                              child: Text(
+                                l10n.rankInCategory(widget.rank, _categoryLabel),
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.inter(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                  color: const Color(0xFF10B981),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       const SizedBox(height: 4),
 
