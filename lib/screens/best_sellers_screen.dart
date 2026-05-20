@@ -906,57 +906,13 @@ class _BestSellerCardState extends State<_BestSellerCard> {
       ),
       child: Stack(
         children: [
-          // Heart icon (top-right)
-          Positioned(
-            top: 10,
-            right: 10,
-            child: GestureDetector(
-              onTap: _toggleFavorite,
-              child: Icon(
-                _isFavorite
-                    ? Icons.favorite_rounded
-                    : Icons.favorite_border_rounded,
-                size: 20,
-                color: _isFavorite ? AppColors.danger : AppColors.textMuted,
-              ),
-            ),
-          ),
-
+          // ── Main row layout ─────────────────────────────────────────────────
           IntrinsicHeight(
             child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // ── Rank badge (ribbon/bookmark shape) ─────────────────────────
-              ClipPath(
-                clipper: const _RankBadgeClipper(),
-                child: Container(
-                  width: 40,
-                  color: const Color(0xFF1B3A6B),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 14),
-                      Text(
-                        '#',
-                        style: GoogleFonts.inter(
-                          fontSize: 8,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white70,
-                        ),
-                      ),
-                      Text(
-                        '${widget.rank}',
-                        style: GoogleFonts.inter(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white,
-                          height: 1.1,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              // Space reserved for the badge (positioned above)
+              const SizedBox(width: 40),
 
               // ── Product image (fills full card height, no padding) ────────────
               SizedBox(
@@ -1161,6 +1117,57 @@ class _BestSellerCardState extends State<_BestSellerCard> {
               ),
             ],
           ),
+          ),
+
+          // ── Rank badge ribbon (fixed height, top-left) ──────────────────────
+          Positioned(
+            top: 0,
+            left: 0,
+            child: ClipPath(
+              clipper: const _RankBadgeClipper(),
+              child: Container(
+                width: 40,
+                height: 80,
+                color: const Color(0xFF1B3A6B),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 14),
+                    Text(
+                      '#',
+                      style: GoogleFonts.inter(
+                        fontSize: 8,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white70,
+                      ),
+                    ),
+                    Text(
+                      '${widget.rank}',
+                      style: GoogleFonts.inter(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                        height: 1.1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          // ── Heart icon (top-right) ───────────────────────────────────────────
+          Positioned(
+            top: 10,
+            right: 10,
+            child: GestureDetector(
+              onTap: _toggleFavorite,
+              child: Icon(
+                _isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                size: 20,
+                color: _isFavorite ? AppColors.danger : AppColors.textMuted,
+              ),
+            ),
           ),
         ],
       ),
