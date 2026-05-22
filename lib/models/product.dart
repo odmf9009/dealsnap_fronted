@@ -1,3 +1,5 @@
+import 'store.dart';
+
 class PromoInfo {
   final String id;
   final List<String> promoCodes;
@@ -37,7 +39,12 @@ class Product {
   final PromoInfo? promo;
   final bool isBestDeal;
   final double? dealScore;
+  /// DEPRECATED: usar [store] en su lugar. Se mantiene por compatibilidad.
   final String? source;
+  /// ID del store de origen (ObjectId como string)
+  final String? idStore;
+  /// Info del store enriquecida por el backend
+  final StoreInfo? store;
   final bool isGroup;
   final int groupCount;
   final String? groupKey;
@@ -59,6 +66,8 @@ class Product {
     this.isBestDeal = false,
     this.dealScore,
     this.source,
+    this.idStore,
+    this.store,
     this.isGroup = false,
     this.groupCount = 1,
     this.groupKey,
@@ -82,6 +91,8 @@ class Product {
       isBestDeal: json['isBestDeal'] ?? false,
       dealScore: json['dealScore']?.toDouble(),
       source: json['source'],
+      idStore: json['idStore']?.toString(),
+      store: (json['store'] is Map<String, dynamic>) ? StoreInfo.fromJson(json['store'] as Map<String, dynamic>) : null,
       isGroup: json['isGroup'] ?? false,
       groupCount: (json['groupCount'] ?? 1).toInt(),
       groupKey: json['groupKey'] as String?,
@@ -89,6 +100,15 @@ class Product {
       rating: (json['rating'] ?? 0).toDouble(),
       reviewCount: (json['reviewCount'] ?? 0).toInt(),
     );
+  }
+
+  /// Nombre del store a mostrar. Prioriza [store.name], luego [source] capitalizado.
+  String get storeName {
+    if (store != null && store!.name.isNotEmpty) return store!.name;
+    if (source != null && source!.isNotEmpty) {
+      return source![0].toUpperCase() + source!.substring(1);
+    }
+    return '';
   }
 
   bool get hasPromoCode => promo?.firstCode != null;

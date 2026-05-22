@@ -309,10 +309,11 @@ class _ProductCardState extends State<ProductCard> {
                 const SizedBox(height: 3),
 
                 // Store
-                const Text(
-                  'Amazon',
-                  style: TextStyle(fontSize: 11, color: AppColors.textMuted),
-                ),
+                if (widget.product.storeName.isNotEmpty)
+                  Text(
+                    widget.product.storeName,
+                    style: const TextStyle(fontSize: 11, color: AppColors.textMuted),
+                  ),
                 const SizedBox(height: 6),
 
                 // Price row: discounted (bold) + original (strikethrough)

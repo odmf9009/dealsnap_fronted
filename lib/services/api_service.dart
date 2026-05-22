@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/product.dart';
 import '../models/category.dart';
+import '../models/store.dart';
 import '../core/config/app_config.dart';
 
 class DealsResponse {
@@ -33,6 +34,7 @@ class ApiService {
     int limit = 48,
     String? category,
     List<String>? categoryIds,
+    List<String>? storeIds,
     int? discount,
   }) async {
     final params = {
@@ -41,6 +43,7 @@ class ApiService {
       'source': 'apk',
       if (category != null && category.isNotEmpty) 'category': category,
       if (categoryIds != null && categoryIds.isNotEmpty) 'categoryIds': categoryIds.join(','),
+      if (storeIds != null && storeIds.isNotEmpty) 'storeIds': storeIds.join(','),
       if (discount != null) 'discount': discount.toString(),
     };
     final uri = Uri.parse('$_base/api/promos/deals').replace(queryParameters: params);
@@ -61,6 +64,7 @@ class ApiService {
     int limit = 48,
     String? category,
     List<String>? categoryIds,
+    List<String>? storeIds,
     int? discount,
   }) async {
     final params = {
@@ -69,6 +73,7 @@ class ApiService {
       'source': 'apk',
       if (category != null && category.isNotEmpty) 'category': category,
       if (categoryIds != null && categoryIds.isNotEmpty) 'categoryIds': categoryIds.join(','),
+      if (storeIds != null && storeIds.isNotEmpty) 'storeIds': storeIds.join(','),
       if (discount != null) 'discount': discount.toString(),
     };
     final uri = Uri.parse('$_base/api/promos/upcoming').replace(queryParameters: params);
@@ -92,6 +97,7 @@ class ApiService {
     int limit = 48,
     String? category,
     List<String>? categoryIds,
+    List<String>? storeIds,
     int? discount,
   }) async {
     final params = {
@@ -100,6 +106,7 @@ class ApiService {
       'source': 'apk',
       if (category != null && category.isNotEmpty) 'category': category,
       if (categoryIds != null && categoryIds.isNotEmpty) 'categoryIds': categoryIds.join(','),
+      if (storeIds != null && storeIds.isNotEmpty) 'storeIds': storeIds.join(','),
       if (discount != null) 'discount': discount.toString(),
     };
     final uri = Uri.parse('$_base/api/promos/ending-soon').replace(queryParameters: params);
@@ -204,6 +211,30 @@ class ApiService {
       return null;
     }
   }
+
+  // ── Stores ───────────────────────────────────────────────────────────────────
+
+  static Future<List<Store>> getStores() async {
+    final uri = Uri.parse('$_base/api/stores');
+    final res = await http.get(uri).timeout(const Duration(seconds: 10));
+    if (res.statusCode != 200) throw Exception('Failed to load stores: ${res.statusCode}');
+    final body = jsonDecode(res.body) as Map<String, dynamic>;
+    final list = body['stores'] as List? ?? [];
+    return list.map((e) => Store.fromJson(e as Map<String, dynamic>)).toList();
+  }
+
+  /// Guarda las preferencias de stores del usuario autenticado.
+  static Future<bool> saveStorePreferences(String token, List<String> storeIds) async {
+    final uri = Uri.parse('$_base/api/users/me/preferences');
+    final res = await http.put(
+      uri,
+      headers: {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'},
+      body: jsonEncode({'stores': storeIds}),
+    ).timeout(const Duration(seconds: 10));
+    return res.statusCode == 200;
+  }
+
+  // ── Category preferences ─────────────────────────────────────────────────────
 
   static Future<List<String>> getCategoryPreferences(String token) async {
     final uri = Uri.parse('$_base/api/users/category-preferences');

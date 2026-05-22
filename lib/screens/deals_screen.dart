@@ -9,6 +9,7 @@ import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../services/category_prefs_notifier.dart';
 import '../services/categories_notifier.dart';
+import '../services/store_notifier.dart';
 import '../theme/app_theme.dart';
 import '../widgets/product_card.dart';
 import '../widgets/sort_bar.dart';
@@ -57,6 +58,7 @@ class _DealsScreenState extends State<DealsScreen> {
     _preferredCategoryIds = CategoryPrefsNotifier.instance.ids;
     CategoryPrefsNotifier.instance.addListener(_onPrefsChanged);
     CategoriesNotifier.instance.addListener(_onCategoriesChanged);
+    StoreNotifier.instance.addListener(_onStoresChanged);
     _loadFilters();
     _loadDeals(reset: true);
     _scrollController.addListener(_onScroll);
@@ -66,11 +68,13 @@ class _DealsScreenState extends State<DealsScreen> {
   void dispose() {
     CategoryPrefsNotifier.instance.removeListener(_onPrefsChanged);
     CategoriesNotifier.instance.removeListener(_onCategoriesChanged);
+    StoreNotifier.instance.removeListener(_onStoresChanged);
     _scrollController.dispose();
     super.dispose();
   }
 
   void _onCategoriesChanged() { if (mounted) setState(() {}); }
+  void _onStoresChanged() { if (mounted) { setState(() {}); _loadDeals(reset: true); } }
 
   void _onPrefsChanged() {
     if (!mounted) return;
@@ -108,10 +112,12 @@ class _DealsScreenState extends State<DealsScreen> {
 
     final usePrefs = _selectedCategory == null && _preferredCategoryIds.isNotEmpty;
     try {
+      final storeFilter = StoreNotifier.instance.storeIdsParam;
       final res = await ApiService.getDeals(
         page: reset ? 1 : _page,
         category: _selectedCategory,
         categoryIds: usePrefs ? _preferredCategoryIds : null,
+        storeIds: storeFilter != null ? storeFilter.split(',') : null,
         discount: _discountRange.start > 0 ? _discountRange.start.toInt() : null,
       );
       if (!mounted) return;
@@ -165,6 +171,10 @@ class _DealsScreenState extends State<DealsScreen> {
     _drawerKey.currentState?.closeEndDrawer();
   }
 
+  void _toggleStore(String storeId) {
+    StoreNotifier.instance.toggle(storeId);
+  }
+
   void _openCategoryPreferences() {
     _drawerKey.currentState?.closeEndDrawer();
     Future.delayed(const Duration(milliseconds: 200), () {
@@ -214,6 +224,9 @@ class _DealsScreenState extends State<DealsScreen> {
         onDiscountRangeChanged: (v) => setState(() => _discountRange = v),
         onPriceRangeChanged: (v) => setState(() => _priceRange = v),
         onManageCategories: _openCategoryPreferences,
+        stores: StoreNotifier.instance.stores,
+        selectedStoreIds: StoreNotifier.instance.selectedIds,
+        onStoreToggled: _toggleStore,
       ),
       body: SafeArea(
         top: false,

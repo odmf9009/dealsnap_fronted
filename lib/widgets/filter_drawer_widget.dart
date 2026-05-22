@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../models/category.dart';
+import '../models/store.dart';
 import '../theme/app_theme.dart';
 
 class FilterDrawerWidget extends StatelessWidget {
@@ -15,6 +16,10 @@ class FilterDrawerWidget extends StatelessWidget {
   final ValueChanged<RangeValues> onDiscountRangeChanged;
   final ValueChanged<RangeValues> onPriceRangeChanged;
   final VoidCallback? onManageCategories;
+  // ── Stores ──────────────────────────────────────────────────────────────────
+  final List<Store> stores;
+  final Set<String> selectedStoreIds;
+  final ValueChanged<String>? onStoreToggled;
 
   const FilterDrawerWidget({
     super.key,
@@ -29,6 +34,9 @@ class FilterDrawerWidget extends StatelessWidget {
     required this.onDiscountRangeChanged,
     required this.onPriceRangeChanged,
     this.onManageCategories,
+    this.stores = const [],
+    this.selectedStoreIds = const {},
+    this.onStoreToggled,
   });
 
   static const _kNavy = Color(0xFF1B3A6B);
@@ -106,6 +114,29 @@ class FilterDrawerWidget extends StatelessWidget {
                         locale: locale,
                         onChanged: onCategoryChanged,
                       ),
+                      const SizedBox(height: 20),
+                      const Divider(height: 1, color: AppColors.divider),
+                      const SizedBox(height: 20),
+                    ],
+
+                    // ── Tienda (Store) ─────────────────────────────────
+                    if (stores.isNotEmpty) ...[
+                      const Text(
+                        'Tienda',
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.w800, color: _kNavy),
+                      ),
+                      const SizedBox(height: 10),
+                      ...stores.map((store) {
+                        final selected = selectedStoreIds.contains(store.id);
+                        return _StoreCheckbox(
+                          store: store,
+                          selected: selected,
+                          onToggle: onStoreToggled != null
+                              ? () => onStoreToggled!(store.id)
+                              : null,
+                        );
+                      }),
                       const SizedBox(height: 20),
                       const Divider(height: 1, color: AppColors.divider),
                       const SizedBox(height: 20),
@@ -204,6 +235,106 @@ class FilterDrawerWidget extends StatelessWidget {
     );
   }
 }
+
+// ── Store Checkbox ─────────────────────────────────────────────────────────────
+
+class _StoreCheckbox extends StatelessWidget {
+  final Store store;
+  final bool selected;
+  final VoidCallback? onToggle;
+
+  const _StoreCheckbox({
+    required this.store,
+    required this.selected,
+    this.onToggle,
+  });
+
+  static const _kNavy = Color(0xFF1B3A6B);
+
+  IconData get _storeIcon {
+    switch (store.slug) {
+      case 'amazon':
+        return Icons.shopping_cart_rounded;
+      case 'aliexpress':
+        return Icons.local_mall_rounded;
+      default:
+        return Icons.store_rounded;
+    }
+  }
+
+  Color get _storeColor {
+    switch (store.slug) {
+      case 'amazon':
+        return const Color(0xFFFFA41C);
+      case 'aliexpress':
+        return const Color(0xFFE62C31);
+      default:
+        return _kNavy;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onToggle,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: selected ? _kNavy.withValues(alpha: 0.07) : const Color(0xFFE8EDF5),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: selected ? _kNavy : Colors.transparent,
+            width: selected ? 1.5 : 0,
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: _storeColor.withValues(alpha: 0.12),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(_storeIcon, size: 15, color: _storeColor),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                store.name,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: selected ? _kNavy : AppColors.textSecondary,
+                ),
+              ),
+            ),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                color: selected ? _kNavy : Colors.transparent,
+                borderRadius: BorderRadius.circular(5),
+                border: Border.all(
+                  color: selected ? _kNavy : AppColors.textMuted,
+                  width: 1.5,
+                ),
+              ),
+              child: selected
+                  ? const Icon(Icons.check_rounded, size: 13, color: Colors.white)
+                  : null,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Category Dropdown ──────────────────────────────────────────────────────────
 
 class _CategoryDropdown extends StatelessWidget {
   final List<Category> categories;
