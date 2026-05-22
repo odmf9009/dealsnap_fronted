@@ -49,7 +49,7 @@ android {
             dimension = "country"
             applicationId = "com.venturesflstudio.promoff"
             resValue("string", "app_name", "PromOff")
-            versionCode = 7
+            versionCode = 8
         }
         create("es") {
             dimension = "country"
