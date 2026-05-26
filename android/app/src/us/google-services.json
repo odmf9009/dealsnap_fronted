@@ -1,79 +1,49 @@
 {
   "project_info": {
-    "project_number": "741608963965",
-    "project_id": "promoff-aaeb4",
-    "storage_bucket": "promoff-aaeb4.firebasestorage.app"
+    "project_number": "1081912516202",
+    "project_id": "promoffusa-496119",
+    "storage_bucket": "promoffusa-496119.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:741608963965:android:53d2a04fe18b02e7a01614",
+        "mobilesdk_app_id": "1:1081912516202:android:0c21cff7522db1d91ff413",
         "android_client_info": {
           "package_name": "com.venturesflstudio.promoff"
         }
       },
       "oauth_client": [
         {
-          "client_id": "741608963965-963q4tt4g7m7hgme7bscomir95a0itor.apps.googleusercontent.com",
+          "client_id": "1081912516202-sttrdtrsu2fsdinlvfsbevjajng11dra.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.venturesflstudio.promoff",
-            "certificate_hash": "5f8714fc2a93819f2f4cbff526bb496a4cb96b06"
+            "certificate_hash": "29164d4bb375e3bb37613a13ec7a8c92d4514fa7"
           }
         },
         {
-          "client_id": "741608963965-c9e5angd76q6urjg03ui30uoo300op2m.apps.googleusercontent.com",
+          "client_id": "1081912516202-i3h296sefubtsjhhhno72rrk6sdn27p3.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCwjGnpLHAWesLp7APBYvHHqeJhN9YR81o"
+          "current_key": "AIzaSyA043BGJA_8cgST0-if-kOQV9kpytUaQE0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "741608963965-c9e5angd76q6urjg03ui30uoo300op2m.apps.googleusercontent.com",
+              "client_id": "1081912516202-i3h296sefubtsjhhhno72rrk6sdn27p3.apps.googleusercontent.com",
               "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:741608963965:android:ee1128d5e4adcc4ca01614",
-        "android_client_info": {
-          "package_name": "com.venturesflstudio.promoff.es"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "741608963965-t75cfhqf1fmmgo1sdqn8i4duqdoun1t5.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.venturesflstudio.promoff.es",
-            "certificate_hash": "5f8714fc2a93819f2f4cbff526bb496a4cb96b06"
-          }
-        },
-        {
-          "client_id": "741608963965-c9e5angd76q6urjg03ui30uoo300op2m.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCwjGnpLHAWesLp7APBYvHHqeJhN9YR81o"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
+            },
             {
-              "client_id": "741608963965-c9e5angd76q6urjg03ui30uoo300op2m.apps.googleusercontent.com",
-              "client_type": 3
+              "client_id": "1081912516202-gmlea5u7v09vqdkjjnpnejq4mjvpoj0j.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.venturesflstudio.promoff"
+              }
             }
           ]
         }

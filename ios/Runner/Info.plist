@@ -19,7 +19,7 @@
 			<string>Google Sign-In US</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.741608963965-205ih2hhb42mktbbppktplbpmracddgp</string>
+				<string>com.googleusercontent.apps.1081912516202-gmlea5u7v09vqdkjjnpnejq4mjvpoj0j</string>
 			</array>
 		</dict>
 		<dict>
@@ -29,7 +29,7 @@
 			<string>Google Sign-In ES</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.741608963965-mbmnu78ehekmh6ia1ra1mkmccm55ik56</string>
+				<string>com.googleusercontent.apps.1081912516202-8f3nhmshf0bjqu2f307nbj2rcif5s1td</string>
 			</array>
 		</dict>
 	</array>

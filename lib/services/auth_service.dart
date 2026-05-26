@@ -31,10 +31,11 @@ class AuthService extends ChangeNotifier {
   AuthService._internal();
 
   static final _googleSignIn = GoogleSignIn(
+    // clientId: iOS only (Android reads from google-services.json automatically)
     clientId: AppConfig.isES
-        ? '741608963965-mbmnu78ehekmh6ia1ra1mkmccm55ik56.apps.googleusercontent.com'
-        : '741608963965-205ih2hhb42mktbbppktplbpmracddgp.apps.googleusercontent.com',
-    serverClientId: '741608963965-c9e5angd76q6urjg03ui30uoo300op2m.apps.googleusercontent.com',
+        ? '1081912516202-8f3nhmshf0bjqu2f307nbj2rcif5s1td.apps.googleusercontent.com'
+        : '1081912516202-gmlea5u7v09vqdkjjnpnejq4mjvpoj0j.apps.googleusercontent.com',
+    serverClientId: '1081912516202-i3h296sefubtsjhhhno72rrk6sdn27p3.apps.googleusercontent.com',
     scopes: ['email', 'profile'],
   );
 
