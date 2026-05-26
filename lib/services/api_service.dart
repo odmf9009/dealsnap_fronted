@@ -201,15 +201,14 @@ class ApiService {
 
   static Future<String?> getAmazonItemUrl(String asin) async {
     try {
-      final uri = Uri.parse('$_base/api/amazon/items').replace(queryParameters: {'asins': asin});
+      final uri = Uri.parse('$_base/api/products/$asin');
       debugPrint('[DealSnap] GET $uri');
       final res = await http.get(uri).timeout(const Duration(seconds: 10));
       debugPrint('[DealSnap] Respuesta status: ${res.statusCode} | body: ${res.body}');
       if (res.statusCode != 200) return null;
       final body = jsonDecode(res.body) as Map<String, dynamic>;
-      final items = body['items'] as List?;
-      if (items == null || items.isEmpty) return null;
-      return (items.first as Map<String, dynamic>)['url'] as String?;
+      final product = body['product'] as Map<String, dynamic>?;
+      return product?['url'] as String?;
     } catch (_) {
       return null;
     }
