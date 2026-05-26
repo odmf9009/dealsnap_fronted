@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart' hide Category;
 import 'package:http/http.dart' as http;
 import '../models/product.dart';
 import '../models/category.dart';
@@ -201,7 +202,9 @@ class ApiService {
   static Future<String?> getAmazonItemUrl(String asin) async {
     try {
       final uri = Uri.parse('$_base/api/amazon/items').replace(queryParameters: {'asins': asin});
+      debugPrint('[DealSnap] GET $uri');
       final res = await http.get(uri).timeout(const Duration(seconds: 10));
+      debugPrint('[DealSnap] Respuesta status: ${res.statusCode} | body: ${res.body}');
       if (res.statusCode != 200) return null;
       final body = jsonDecode(res.body) as Map<String, dynamic>;
       final items = body['items'] as List?;

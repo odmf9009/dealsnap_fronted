@@ -508,6 +508,7 @@ class _HowToUseDialogState extends State<_HowToUseDialog> {
     final asin = _extractAsin(widget.product.url);
     if (asin != null) {
       final url = await ApiService.getAmazonItemUrl(asin);
+      debugPrint('[DealSnap] Respuesta API Amazon (asin: $asin): $url');
       if (mounted) setState(() { _amazonUrl = url ?? widget.product.url; _loadingUrl = false; });
     } else {
       if (mounted) setState(() { _amazonUrl = widget.product.url; _loadingUrl = false; });
@@ -517,8 +518,11 @@ class _HowToUseDialogState extends State<_HowToUseDialog> {
   Future<void> _launch(BuildContext context) async {
     Navigator.pop(context);
     final code = widget.product.promoCode;
+    final promo = widget.product.promo;
+    debugPrint('[DealSnap] productId: ${widget.product.id} | hasPromoCode: ${widget.product.hasPromoCode} | promoCode: $code | promoCodes: ${promo?.promoCodes} | promoId: ${promo?.id} | promoTitle: ${promo?.title}');
     if (widget.product.hasPromoCode && code != null) {
       await Clipboard.setData(ClipboardData(text: code));
+      debugPrint('[DealSnap] Código copiado al clipboard: $code');
       if (context.mounted) {
         final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -545,6 +549,7 @@ class _HowToUseDialogState extends State<_HowToUseDialog> {
       }
     }
     final urlToOpen = _amazonUrl ?? widget.product.url;
+    debugPrint('[DealSnap] Abriendo URL de Amazon: $urlToOpen');
     if (urlToOpen.isNotEmpty) {
       final uri = Uri.parse(urlToOpen);
       if (await canLaunchUrl(uri)) {
