@@ -109,53 +109,64 @@ class _HeroBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final screenW = MediaQuery.of(context).size.width;
+    final iconW = (screenW * 0.28).clamp(90.0, 130.0);
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      height: 140,
+      height: 130,
       decoration: BoxDecoration(
         color: const Color(0xFFB6EFD8),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 12, 0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF5EFD0),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      l10n.topDeals,
-                      style: GoogleFonts.inter(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w900,
-                        color: AppColors.textPrimary,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF5EFD0),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        l10n.topDeals,
+                        style: GoogleFonts.inter(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w900,
+                          color: AppColors.textPrimary,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    l10n.heroBannerSubtitle,
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: AppColors.textSecondary,
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      width: screenW - iconW - 64,
+                      child: Text(
+                        l10n.heroBannerSubtitle,
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          color: AppColors.textSecondary,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
           Container(
-            width: 120,
+            width: iconW,
             decoration: const BoxDecoration(
               color: Color(0xFF9ADECB),
               borderRadius: BorderRadius.only(
@@ -163,9 +174,9 @@ class _HeroBanner extends StatelessWidget {
                 bottomRight: Radius.circular(20),
               ),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.local_offer_rounded,
-              size: 52,
+              size: iconW * 0.42,
               color: Colors.white,
             ),
           ),

@@ -1,7 +1,7 @@
 name: dealsnap_app
 description: "PromOff — Amazon promo codes & deals tracker"
 publish_to: 'none'
-version: 1.1.1+7
+version: 1.1.1+8
 
 environment:
   sdk: ^3.7.2

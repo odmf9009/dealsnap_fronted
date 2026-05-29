@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -31,10 +32,7 @@ class AuthService extends ChangeNotifier {
   AuthService._internal();
 
   static final _googleSignIn = GoogleSignIn(
-    // clientId: iOS only (Android reads from google-services.json automatically)
-    clientId: AppConfig.isES
-        ? '1081912516202-8f3nhmshf0bjqu2f307nbj2rcif5s1td.apps.googleusercontent.com'
-        : '1081912516202-gmlea5u7v09vqdkjjnpnejq4mjvpoj0j.apps.googleusercontent.com',
+    // clientId es solo para iOS — en Android se lee automáticamente de google-services.json
     serverClientId: '1081912516202-i3h296sefubtsjhhhno72rrk6sdn27p3.apps.googleusercontent.com',
     scopes: ['email', 'profile'],
   );
@@ -121,7 +119,15 @@ class AuthService extends ChangeNotifier {
       notifyListeners();
       return _user;
     } catch (e) {
-      debugPrint('Google sign-in error: $e');
+      debugPrint('═══════════════════════════════════════');
+      debugPrint('[GoogleSignIn] ERROR: $e');
+      debugPrint('[GoogleSignIn] tipo: ${e.runtimeType}');
+      if (e is PlatformException) {
+        debugPrint('[GoogleSignIn] code:    ${e.code}');
+        debugPrint('[GoogleSignIn] message: ${e.message}');
+        debugPrint('[GoogleSignIn] details: ${e.details}');
+      }
+      debugPrint('═══════════════════════════════════════');
       return null;
     } finally {
       _loading = false;
