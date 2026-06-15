@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,6 +11,7 @@ import 'deals_screen.dart';
 import 'limited_screen.dart';
 import 'search_screen.dart';
 import 'favorites_screen.dart';
+import 'alerts/alerts_screen.dart';
 import 'auth/login_screen.dart';
 import 'profile/profile_screen.dart';
 import 'category_preferences_screen.dart';
@@ -21,6 +23,9 @@ const _kTabDeals = 1;
 const _kTabLimited = 2;
 const _kTabFavorites = 3;
 const _kTabProfile = 4;
+
+// Sidebar is persistent when running on web with width >= this threshold
+const _kWebSidebarBreakpoint = 1024.0;
 
 
 class ShellScreen extends StatefulWidget {
@@ -95,11 +100,18 @@ class _ShellScreenState extends State<ShellScreen> {
     _scaffoldKey.currentState?.closeDrawer();
   }
 
+  bool get _useWebSidebar =>
+      kIsWeb && MediaQuery.sizeOf(context).width >= _kWebSidebarBreakpoint;
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final isWide = width >= 720;
     final l10n = AppLocalizations.of(context);
+
+    if (_useWebSidebar) {
+      return _buildWebLayout(l10n);
+    }
 
     return Scaffold(
       key: _scaffoldKey,
@@ -112,6 +124,66 @@ class _ShellScreenState extends State<ShellScreen> {
       bottomNavigationBar: isWide || _isSearching
           ? null
           : _buildBottomNav(l10n),
+    );
+  }
+
+  Widget _buildWebLayout(AppLocalizations l10n) {
+    return Scaffold(
+      backgroundColor: AppColors.bg,
+      body: Column(
+        children: [
+          _WebHeader(
+            auth: _auth,
+            isSearching: _isSearching,
+            searchCtrl: _searchCtrl,
+            searchFocus: _searchFocus,
+            queryNotifier: _queryNotifier,
+            onOpenSearch: _openSearch,
+            onCloseSearch: _closeSearch,
+            onSearchChanged: _onSearchChanged,
+            onLogin: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const LoginScreen()),
+            ),
+            onProfile: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ProfileScreen()),
+            ),
+          ),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _WebSidebar(
+                  currentIndex: _currentIndex,
+                  auth: _auth,
+                  onNavigate: _navigate,
+                  onBestSellers: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const BestSellersScreen()),
+                  ),
+                  onAlerts: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const AlertsScreen()),
+                  ),
+                  onCategories: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const CategoryPreferencesScreen()),
+                  ).then((ids) {
+                    if (ids is List<String>) CategoryPrefsNotifier.instance.update(ids);
+                  }),
+                ),
+                const VerticalDivider(width: 1, color: AppColors.divider),
+                Expanded(
+                  child: _isSearching
+                      ? SearchScreen(queryNotifier: _queryNotifier)
+                      : _currentScreen(),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -722,6 +794,526 @@ class _BottomNavItem extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// WEB LAYOUT WIDGETS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+class _WebHeader extends ConsumerWidget {
+  final AuthService auth;
+  final bool isSearching;
+  final TextEditingController searchCtrl;
+  final FocusNode searchFocus;
+  final ValueNotifier<String> queryNotifier;
+  final VoidCallback onOpenSearch;
+  final VoidCallback onCloseSearch;
+  final ValueChanged<String> onSearchChanged;
+  final VoidCallback onLogin;
+  final VoidCallback onProfile;
+
+  const _WebHeader({
+    required this.auth,
+    required this.isSearching,
+    required this.searchCtrl,
+    required this.searchFocus,
+    required this.queryNotifier,
+    required this.onOpenSearch,
+    required this.onCloseSearch,
+    required this.onSearchChanged,
+    required this.onLogin,
+    required this.onProfile,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final locale = ref.watch(localeProvider);
+    final l10n = AppLocalizations.of(context);
+
+    return Container(
+      height: 64,
+      decoration: const BoxDecoration(
+        color: AppColors.surface,
+        border: Border(bottom: BorderSide(color: AppColors.divider)),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Row(
+        children: [
+          // Logo
+          Image.asset('assets/images/logo.png', height: 34, fit: BoxFit.contain),
+          const SizedBox(width: 24),
+
+          // Search bar (expanded)
+          Expanded(
+            child: isSearching
+                ? _WebSearchField(
+                    controller: searchCtrl,
+                    focusNode: searchFocus,
+                    placeholder: l10n.searchDealsPlaceholder,
+                    onChanged: onSearchChanged,
+                    onClose: onCloseSearch,
+                  )
+                : GestureDetector(
+                    onTap: onOpenSearch,
+                    child: Container(
+                      height: 38,
+                      constraints: const BoxConstraints(maxWidth: 560),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceVariant,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: AppColors.divider),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.search_rounded, size: 16, color: AppColors.textMuted),
+                          const SizedBox(width: 8),
+                          Text(
+                            l10n.searchDealsPlaceholder,
+                            style: const TextStyle(color: AppColors.textMuted, fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+          ),
+
+          const SizedBox(width: 16),
+
+          // Language toggle
+          TextButton(
+            onPressed: () {
+              final next = locale.languageCode == 'en'
+                  ? const Locale('es')
+                  : const Locale('en');
+              ref.read(localeProvider.notifier).setLocale(next);
+            },
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              minimumSize: Size.zero,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.language_rounded, size: 15, color: AppColors.textSecondary),
+                const SizedBox(width: 4),
+                Text(
+                  locale.languageCode.toUpperCase(),
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(width: 8),
+
+          // Auth button
+          ListenableBuilder(
+            listenable: auth,
+            builder: (_, __) {
+              final user = auth.user;
+              if (user != null) {
+                return InkWell(
+                  onTap: onProfile,
+                  borderRadius: BorderRadius.circular(20),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircleAvatar(
+                          radius: 14,
+                          backgroundColor: AppColors.brandLight,
+                          backgroundImage: user.avatar != null ? NetworkImage(user.avatar!) : null,
+                          child: user.avatar == null
+                              ? Text(
+                                  user.name.isNotEmpty ? user.name[0].toUpperCase() : '?',
+                                  style: const TextStyle(
+                                    color: AppColors.brand,
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 11,
+                                  ),
+                                )
+                              : null,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          user.name.split(' ').first,
+                          style: GoogleFonts.inter(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        const Icon(Icons.expand_more_rounded, size: 16, color: AppColors.textSecondary),
+                      ],
+                    ),
+                  ),
+                );
+              }
+              return FilledButton.icon(
+                onPressed: onLogin,
+                icon: const Icon(Icons.person_rounded, size: 15),
+                label: Text(l10n.signIn),
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppColors.brand,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  textStyle: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w700),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _WebSearchField extends StatelessWidget {
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final String placeholder;
+  final ValueChanged<String> onChanged;
+  final VoidCallback onClose;
+
+  const _WebSearchField({
+    required this.controller,
+    required this.focusNode,
+    required this.placeholder,
+    required this.onChanged,
+    required this.onClose,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 38,
+      constraints: const BoxConstraints(maxWidth: 560),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceVariant,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.brand, width: 1.5),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          const Icon(Icons.search_rounded, size: 16, color: AppColors.brand),
+          const SizedBox(width: 8),
+          Expanded(
+            child: TextField(
+              controller: controller,
+              focusNode: focusNode,
+              autofocus: true,
+              style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
+              decoration: InputDecoration(
+                hintText: placeholder,
+                hintStyle: const TextStyle(color: AppColors.textMuted, fontSize: 14),
+                border: InputBorder.none,
+                isDense: true,
+                contentPadding: EdgeInsets.zero,
+              ),
+              onChanged: onChanged,
+            ),
+          ),
+          if (controller.text.isNotEmpty)
+            GestureDetector(
+              onTap: onClose,
+              child: const Icon(Icons.close_rounded, size: 16, color: AppColors.textMuted),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _WebSidebar extends StatelessWidget {
+  final int currentIndex;
+  final AuthService auth;
+  final ValueChanged<int> onNavigate;
+  final VoidCallback onBestSellers;
+  final VoidCallback onAlerts;
+  final VoidCallback onCategories;
+
+  const _WebSidebar({
+    required this.currentIndex,
+    required this.auth,
+    required this.onNavigate,
+    required this.onBestSellers,
+    required this.onAlerts,
+    required this.onCategories,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return SizedBox(
+      width: 240,
+      child: Container(
+        color: AppColors.surface,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // ── Main navigation ──────────────────────────────
+                    _SidebarItem(
+                      icon: Icons.home_outlined,
+                      activeIcon: Icons.home_rounded,
+                      label: l10n.navHome,
+                      selected: currentIndex == _kTabHome,
+                      color: AppColors.brand,
+                      onTap: () => onNavigate(_kTabHome),
+                    ),
+                    _SidebarItem(
+                      icon: Icons.sell_outlined,
+                      activeIcon: Icons.sell_rounded,
+                      label: l10n.navDeals,
+                      selected: currentIndex == _kTabDeals,
+                      color: const Color(0xFFEF4444),
+                      onTap: () => onNavigate(_kTabDeals),
+                    ),
+                    _SidebarItem(
+                      icon: Icons.rocket_launch_outlined,
+                      activeIcon: Icons.rocket_launch_rounded,
+                      label: l10n.navLimited,
+                      selected: currentIndex == _kTabLimited,
+                      color: const Color(0xFF8B5CF6),
+                      onTap: () => onNavigate(_kTabLimited),
+                    ),
+                    _SidebarItem(
+                      icon: Icons.favorite_border_rounded,
+                      activeIcon: Icons.favorite_rounded,
+                      label: l10n.navFavorites,
+                      selected: currentIndex == _kTabFavorites,
+                      color: const Color(0xFFEC4899),
+                      onTap: () => onNavigate(_kTabFavorites),
+                    ),
+
+                    _SidebarDivider(label: l10n.bestSellers),
+
+                    // ── Discover ─────────────────────────────────────
+                    _SidebarItem(
+                      icon: Icons.emoji_events_outlined,
+                      activeIcon: Icons.emoji_events_rounded,
+                      label: l10n.bestSellers,
+                      selected: false,
+                      color: const Color(0xFFF59E0B),
+                      onTap: onBestSellers,
+                    ),
+                    _SidebarItem(
+                      icon: Icons.notifications_outlined,
+                      activeIcon: Icons.notifications_rounded,
+                      label: l10n.drawerDealAlerts,
+                      selected: false,
+                      color: const Color(0xFFF97316),
+                      onTap: onAlerts,
+                    ),
+
+                    _SidebarDivider(label: l10n.myCategories),
+
+                    // ── Account ──────────────────────────────────────
+                    ListenableBuilder(
+                      listenable: auth,
+                      builder: (_, __) {
+                        if (auth.user == null) return const SizedBox.shrink();
+                        return _SidebarItem(
+                          icon: Icons.grid_view_outlined,
+                          activeIcon: Icons.grid_view_rounded,
+                          label: l10n.myCategories,
+                          selected: false,
+                          color: const Color(0xFF1B3A6B),
+                          onTap: onCategories,
+                        );
+                      },
+                    ),
+                    _SidebarItem(
+                      icon: Icons.workspace_premium_outlined,
+                      activeIcon: Icons.workspace_premium_rounded,
+                      label: l10n.drawerPremiumDeals,
+                      selected: false,
+                      color: const Color(0xFF8B5CF6),
+                      onTap: () => onNavigate(_kTabHome),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // ── Footer: user tile or login CTA ───────────────────────
+            const Divider(height: 1, color: AppColors.divider),
+            ListenableBuilder(
+              listenable: auth,
+              builder: (_, __) {
+                final user = auth.user;
+                if (user == null) {
+                  return Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () => onNavigate(_kTabProfile),
+                        icon: const Icon(Icons.person_rounded, size: 15),
+                        label: Text(l10n.signIn),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.brand,
+                          side: const BorderSide(color: AppColors.brand),
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          textStyle: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w700),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        ),
+                      ),
+                    ),
+                  );
+                }
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 14),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 16,
+                        backgroundColor: AppColors.brandLight,
+                        backgroundImage: user.avatar != null ? NetworkImage(user.avatar!) : null,
+                        child: user.avatar == null
+                            ? Text(
+                                user.name.isNotEmpty ? user.name[0].toUpperCase() : '?',
+                                style: const TextStyle(
+                                  color: AppColors.brand,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 12,
+                                ),
+                              )
+                            : null,
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              user.name,
+                              style: GoogleFonts.inter(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.textPrimary,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              user.email,
+                              style: GoogleFonts.inter(
+                                fontSize: 11,
+                                color: AppColors.textSecondary,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.logout_rounded, size: 16, color: AppColors.danger),
+                        onPressed: () => auth.signOut(),
+                        tooltip: l10n.signOut,
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SidebarItem extends StatelessWidget {
+  final IconData icon;
+  final IconData activeIcon;
+  final String label;
+  final bool selected;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _SidebarItem({
+    required this.icon,
+    required this.activeIcon,
+    required this.label,
+    required this.selected,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 1),
+      child: Material(
+        color: selected ? color.withValues(alpha: 0.08) : Colors.transparent,
+        borderRadius: BorderRadius.circular(10),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(10),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+            child: Row(
+              children: [
+                Icon(
+                  selected ? activeIcon : icon,
+                  size: 18,
+                  color: selected ? color : AppColors.textSecondary,
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  label,
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                    color: selected ? color : AppColors.textPrimary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SidebarDivider extends StatelessWidget {
+  final String label;
+  const _SidebarDivider({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(18, 14, 18, 4),
+      child: Text(
+        label.toUpperCase(),
+        style: GoogleFonts.inter(
+          fontSize: 10,
+          fontWeight: FontWeight.w700,
+          color: AppColors.textMuted,
+          letterSpacing: 0.8,
         ),
       ),
     );
