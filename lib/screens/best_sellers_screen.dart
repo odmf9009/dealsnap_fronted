@@ -905,7 +905,7 @@ class _BestSellerCardState extends State<_BestSellerCard> {
   }
 
   Future<void> _openUrl() async {
-    final uri = Uri.tryParse(widget.product.url);
+    final uri = Uri.tryParse(widget.product.openUrl);
     if (uri != null) await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 

@@ -36,6 +36,7 @@ class Product {
   final int discountPercentage;
   final String category;
   final String url;
+  final String? affiliateUrl;
   final PromoInfo? promo;
   final bool isBestDeal;
   final double? dealScore;
@@ -62,6 +63,7 @@ class Product {
     required this.discountPercentage,
     required this.category,
     required this.url,
+    this.affiliateUrl,
     this.promo,
     this.isBestDeal = false,
     this.dealScore,
@@ -87,6 +89,7 @@ class Product {
       discountPercentage: (json['discountPercentage'] ?? 0).toInt(),
       category: json['category'] ?? '',
       url: json['url'] ?? '',
+      affiliateUrl: json['affiliateUrl'] as String?,
       promo: (json['promo'] is Map<String, dynamic>) ? PromoInfo.fromJson(json['promo'] as Map<String, dynamic>) : null,
       isBestDeal: json['isBestDeal'] ?? false,
       dealScore: json['dealScore']?.toDouble(),
@@ -113,4 +116,13 @@ class Product {
 
   bool get hasPromoCode => promo?.firstCode != null;
   String? get promoCode => promo?.firstCode;
+
+  bool get isAliExpress =>
+      store?.slug == 'aliexpress' || source == 'aliexpress' || asin.startsWith('ae-');
+
+  bool get isAmazon =>
+      store?.slug == 'amazon' || source == 'amazon';
+
+  /// URL definitiva para abrir: affiliateUrl tiene prioridad sobre url.
+  String get openUrl => affiliateUrl ?? url;
 }

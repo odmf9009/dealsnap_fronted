@@ -308,12 +308,9 @@ class _ProductCardState extends State<ProductCard> {
                 ),
                 const SizedBox(height: 3),
 
-                // Store
+                // Store badge
                 if (widget.product.storeName.isNotEmpty)
-                  Text(
-                    widget.product.storeName,
-                    style: const TextStyle(fontSize: 11, color: AppColors.textMuted),
-                  ),
+                  _StoreBadge(product: widget.product),
                 const SizedBox(height: 6),
 
                 // Price row: discounted (bold) + original (strikethrough)
@@ -505,24 +502,27 @@ class _HowToUseDialogState extends State<_HowToUseDialog> {
   }
 
   Future<void> _fetchUrl() async {
+    // AliExpress: use pre-generated affiliate URL, no API call needed
+    if (widget.product.isAliExpress) {
+      if (mounted) setState(() { _amazonUrl = widget.product.openUrl; _loadingUrl = false; });
+      return;
+    }
+    // Amazon: extract ASIN and get tagged URL from backend
     final asin = _extractAsin(widget.product.url);
     if (asin != null) {
       final url = await ApiService.getAmazonItemUrl(asin);
-      debugPrint('[DealSnap] Respuesta API Amazon (asin: $asin): $url');
+      debugPrint('[DealSnap] Amazon URL (asin: $asin): $url');
       if (mounted) setState(() { _amazonUrl = url ?? widget.product.url; _loadingUrl = false; });
     } else {
-      if (mounted) setState(() { _amazonUrl = widget.product.url; _loadingUrl = false; });
+      if (mounted) setState(() { _amazonUrl = widget.product.openUrl; _loadingUrl = false; });
     }
   }
 
   Future<void> _launch(BuildContext context) async {
     Navigator.pop(context);
     final code = widget.product.promoCode;
-    final promo = widget.product.promo;
-    debugPrint('[DealSnap] productId: ${widget.product.id} | hasPromoCode: ${widget.product.hasPromoCode} | promoCode: $code | promoCodes: ${promo?.promoCodes} | promoId: ${promo?.id} | promoTitle: ${promo?.title}');
     if (widget.product.hasPromoCode && code != null) {
       await Clipboard.setData(ClipboardData(text: code));
-      debugPrint('[DealSnap] Código copiado al clipboard: $code');
       if (context.mounted) {
         final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -548,8 +548,7 @@ class _HowToUseDialogState extends State<_HowToUseDialog> {
         );
       }
     }
-    final urlToOpen = _amazonUrl ?? widget.product.url;
-    debugPrint('[DealSnap] Abriendo URL de Amazon: $urlToOpen');
+    final urlToOpen = _amazonUrl ?? widget.product.openUrl;
     if (urlToOpen.isNotEmpty) {
       final uri = Uri.parse(urlToOpen);
       if (await canLaunchUrl(uri)) {
@@ -700,7 +699,7 @@ class _HowToUseDialogState extends State<_HowToUseDialog> {
               ),
               const SizedBox(height: 10),
 
-              // Get discount button
+              // Get discount button — color and label adapt to store
               SizedBox(
                 width: double.infinity,
                 child: FilledButton.icon(
@@ -708,11 +707,21 @@ class _HowToUseDialogState extends State<_HowToUseDialog> {
                   icon: _loadingUrl
                       ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
                       : const Icon(Icons.local_offer_rounded, size: 16),
-                  label: Text(_loadingUrl ? l10n.loading : l10n.getDiscountOnAmazon),
+                  label: Text(
+                    _loadingUrl
+                        ? l10n.loading
+                        : widget.product.isAliExpress
+                            ? 'Ver en AliExpress'
+                            : l10n.getDiscountOnAmazon,
+                  ),
                   style: FilledButton.styleFrom(
-                    backgroundColor: const Color(0xFFFFA41C),
+                    backgroundColor: widget.product.isAliExpress
+                        ? const Color(0xFFE8111A)
+                        : const Color(0xFFFFA41C),
                     foregroundColor: Colors.white,
-                    disabledBackgroundColor: const Color(0xFFFFD080),
+                    disabledBackgroundColor: widget.product.isAliExpress
+                        ? const Color(0xFFFF8088)
+                        : const Color(0xFFFFD080),
                     disabledForegroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     textStyle: GoogleFonts.inter(
@@ -788,6 +797,66 @@ class _Dot extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+    );
+  }
+}
+
+// ── Store badge chip ───────────────────────────────────────────────────────────
+
+class _StoreBadge extends StatelessWidget {
+  final Product product;
+  const _StoreBadge({required this.product});
+
+  @override
+  Widget build(BuildContext context) {
+    final isAE = product.isAliExpress;
+    final isAZ = product.isAmazon;
+
+    final Color bgColor;
+    final Color textColor;
+    final IconData icon;
+
+    if (isAE) {
+      bgColor = const Color(0xFFFFEBEC);
+      textColor = const Color(0xFFE8111A);
+      icon = Icons.storefront_rounded;
+    } else if (isAZ) {
+      bgColor = const Color(0xFFFFF3E0);
+      textColor = const Color(0xFFE47911);
+      icon = Icons.shopping_bag_outlined;
+    } else {
+      bgColor = const Color(0xFFF0F4FF);
+      textColor = const Color(0xFF3B5BDB);
+      icon = Icons.store_rounded;
+    }
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 10, color: textColor),
+              const SizedBox(width: 3),
+              Text(
+                product.storeName,
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                  color: textColor,
+                  letterSpacing: 0.2,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
