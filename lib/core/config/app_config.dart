@@ -1,7 +1,7 @@
 class AppConfig {
   static const apiBase = String.fromEnvironment(
     'API_BASE',
-    defaultValue: 'https://www.promoff.com',
+    defaultValue: 'https://app.promoff.com',
   );
 
   static const country = String.fromEnvironment(
