@@ -14,6 +14,7 @@ class FilterDrawerWidget extends StatelessWidget {
   final ValueChanged<String?> onCategoryChanged;
   final void Function(double min, double max) onDiscountPreset;
   final ValueChanged<RangeValues> onDiscountRangeChanged;
+  final ValueChanged<RangeValues>? onDiscountRangeEnd;
   final ValueChanged<RangeValues> onPriceRangeChanged;
   final VoidCallback? onManageCategories;
   // ── Stores ──────────────────────────────────────────────────────────────────
@@ -32,6 +33,7 @@ class FilterDrawerWidget extends StatelessWidget {
     required this.onCategoryChanged,
     required this.onDiscountPreset,
     required this.onDiscountRangeChanged,
+    this.onDiscountRangeEnd,
     required this.onPriceRangeChanged,
     this.onManageCategories,
     this.stores = const [],
@@ -148,21 +150,21 @@ class FilterDrawerWidget extends StatelessWidget {
                             fontSize: 14, fontWeight: FontWeight.w800, color: _kNavy)),
                     const SizedBox(height: 10),
                     FilterDiscountPreset(
-                      label: '0% – 30%',
-                      active: discountRange.start == 0 && discountRange.end == 30,
-                      onTap: () => onDiscountPreset(0, 30),
+                      label: '≥ 30%',
+                      active: discountRange.start == 30 && discountRange.end == 100,
+                      onTap: () => onDiscountPreset(30, 100),
                     ),
                     const SizedBox(height: 8),
                     FilterDiscountPreset(
-                      label: '30% – 60%',
-                      active: discountRange.start == 30 && discountRange.end == 60,
-                      onTap: () => onDiscountPreset(30, 60),
+                      label: '≥ 50%',
+                      active: discountRange.start == 50 && discountRange.end == 100,
+                      onTap: () => onDiscountPreset(50, 100),
                     ),
                     const SizedBox(height: 8),
                     FilterDiscountPreset(
-                      label: 'Más de 60%',
-                      active: discountRange.start == 60 && discountRange.end == 100,
-                      onTap: () => onDiscountPreset(60, 100),
+                      label: '≥ 70%',
+                      active: discountRange.start == 70 && discountRange.end == 100,
+                      onTap: () => onDiscountPreset(70, 100),
                     ),
                     const SizedBox(height: 8),
                     FilterDiscountPreset(
@@ -191,6 +193,7 @@ class FilterDrawerWidget extends StatelessWidget {
                         max: 100,
                         divisions: 100,
                         onChanged: onDiscountRangeChanged,
+                        onChangeEnd: onDiscountRangeEnd,
                       ),
                     ),
 

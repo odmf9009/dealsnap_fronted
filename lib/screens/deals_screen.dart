@@ -36,7 +36,7 @@ class _DealsScreenState extends State<DealsScreen> {
   List<String> _preferredCategoryIds = [];
 
   String? _selectedCategory;
-  RangeValues _discountRange = const RangeValues(0, 100);
+  RangeValues _discountRange = const RangeValues(30, 100);
   RangeValues _priceRange = const RangeValues(0, 1000);
   SortOption _sort = SortOption.discountHigh;
 
@@ -163,6 +163,12 @@ class _DealsScreenState extends State<DealsScreen> {
   void _applyDiscountPreset(double min, double max) {
     setState(() => _discountRange = RangeValues(min, max));
     _drawerKey.currentState?.closeEndDrawer();
+    _loadDeals(reset: true);
+  }
+
+  void _onDiscountRangeEnd(RangeValues v) {
+    setState(() => _discountRange = v);
+    _loadDeals(reset: true);
   }
 
   void _applyCategory(String? cat) {
@@ -222,6 +228,7 @@ class _DealsScreenState extends State<DealsScreen> {
         onCategoryChanged: _applyCategory,
         onDiscountPreset: _applyDiscountPreset,
         onDiscountRangeChanged: (v) => setState(() => _discountRange = v),
+        onDiscountRangeEnd: _onDiscountRangeEnd,
         onPriceRangeChanged: (v) => setState(() => _priceRange = v),
         onManageCategories: _openCategoryPreferences,
         stores: StoreNotifier.instance.stores,
@@ -272,7 +279,7 @@ class _DealsScreenState extends State<DealsScreen> {
                                   style: TextStyle(
                                     fontSize: 13,
                                     fontWeight: FontWeight.w600,
-                                    color: (_discountRange != const RangeValues(0, 100) ||
+                                    color: (_discountRange != const RangeValues(30, 100) ||
                                             _priceRange != const RangeValues(0, 1000))
                                         ? AppColors.brand
                                         : AppColors.textSecondary,
